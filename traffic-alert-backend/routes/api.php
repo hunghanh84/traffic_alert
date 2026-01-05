@@ -75,6 +75,26 @@ Route::prefix('admin')->middleware(['auth:sanctum', App\Http\Middleware\CheckAdm
         Route::put('/{id}/reject', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'reject']);
         Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'destroy']);
     });
+
+    // User Management
+    Route::prefix('users')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'index']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'show']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'destroy']);
+        Route::put('/{id}/toggle-status', [App\Http\Controllers\Api\Admin\AdminUserController::class, 'toggleStatus']);
+    });
+
+    // Event Management
+    Route::prefix('events')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'index']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'show']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'destroy']);
+        Route::put('/{id}/toggle-status', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'toggleStatus']);
+    });
 });
 
 // RSS News API routes

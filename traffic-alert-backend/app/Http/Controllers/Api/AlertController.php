@@ -346,9 +346,9 @@ public function show($id)
             'thanh_pho' => $alert->phuongXa?->thanhPho,
             'nguoi_dung' => $alert->nguoiDung ? [
                 'id' => $alert->nguoiDung->id,
-                'ten' => $alert->nguoiDung->ten,
-                'ho_ten' => $alert->nguoiDung->ho_ten,
-                'anh_dai_dien' => $alert->nguoiDung->anh_dai_dien,
+                'ten_dang_nhap' => $alert->nguoiDung->ten_dang_nhap,
+                'email' => $alert->nguoiDung->email,
+                'so_dien_thoai' => $alert->nguoiDung->so_dien_thoai,
             ] : null,
             'media' => $alert->media->map(function ($m) {
                 return [

@@ -84,6 +84,26 @@ const router = createRouter({
           component: () => import('../views/AdminAlertDetailView.vue'),
         },
         {
+          path: 'users',
+          name: 'admin-users',
+          component: () => import('../views/AdminUserListView.vue'),
+        },
+        {
+          path: 'users/:id',
+          name: 'admin-user-detail',
+          component: () => import('../views/AdminUserDetailView.vue'),
+        },
+        {
+          path: 'events',
+          name: 'admin-events',
+          component: () => import('../views/AdminEventListView.vue'),
+        },
+        {
+          path: 'events/:id',
+          name: 'admin-event-detail',
+          component: () => import('../views/AdminEventDetailView.vue'),
+        },
+        {
           path: '',
           redirect: '/admin/dashboard'
         }

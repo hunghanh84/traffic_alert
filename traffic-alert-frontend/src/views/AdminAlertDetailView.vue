@@ -20,6 +20,8 @@ const fetchAlertDetail = async () => {
     const result = await response.json()
     if (result.success) {
       alert.value = result.data
+      console.log('Alert data:', result.data)
+      console.log('User data:', result.data.nguoi_dung)
     }
   } catch (error) {
     console.error('Error fetching alert:', error)
@@ -68,8 +70,12 @@ onMounted(() => {
         <div class="info-card">
           <h3>👤 Người gửi</h3>
           <div class="info-row">
-            <span class="label">Tên:</span>
-            <span class="value">{{ alert.nguoi_dung?.ho_ten || alert.nguoi_dung?.ten || `User ${alert.nguoi_dung?.id}` }}</span>
+            <span class="label">Tên đăng nhập:</span>
+            <span class="value">{{ alert.nguoi_dung?.ten_dang_nhap || `User #${alert.nguoi_dung?.id}` }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ alert.nguoi_dung?.email || 'N/A' }}</span>
           </div>
           <div class="info-row">
             <span class="label">ID:</span>
