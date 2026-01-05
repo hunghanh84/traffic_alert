@@ -1,0 +1,33 @@
+Để cập nhật icons đẹp hơn, hãy thay đổi dòng 159 trong NewsView.vue:
+
+TỪ:
+{{ alert.loai_canh_bao === 'traffic' ? '🚗' : '🌊' }}
+
+THÀNH:
+{{ alert.loai_canh_bao === 'traffic' ? '🚦' : '💧' }}
+
+Hoặc các icon khác đẹp:
+- Traffic: 🚦 (đèn giao thông), 🚧 (công trình), ⚠️ (cảnh báo), 🛑 (stop)
+- Flood: 💧 (giọt nước), 🌧️ (mưa), ⛈️ (giông), 🌊 (sóng)
+
+Thêm CSS để làm đẹp icon (thêm vào phần .incident-icon):
+
+.incident-icon {
+  font-size: 1.5rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.incident-icon.icon-traffic {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.incident-icon.icon-flood {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}

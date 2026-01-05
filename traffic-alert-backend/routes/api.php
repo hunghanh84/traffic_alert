@@ -1,0 +1,81 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\AlertController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\RssNewsController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+
+// Authentication API routes
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::put('/profile', [AuthController::class, 'updateProfile']);
+        Route::post('/deactivate', [AuthController::class, 'deactivate']);
+    });
+});
+
+// Location API routes
+Route::prefix('locations')->group(function () {
+    Route::get('/wards', [LocationController::class, 'getWards']);
+    Route::get('/streets', [LocationController::class, 'getStreets']);
+    Route::get('/streets/{id}', [LocationController::class, 'getStreetDetail']);
+    Route::get('/streets/ward/{wardId}', [LocationController::class, 'getStreetsByWard']);
+    Route::get('/severity-levels', [LocationController::class, 'getSeverityLevels']);
+    Route::get('/data', [LocationController::class, 'getLocationData']);
+});
+
+// Alert API routes
+Route::prefix('alerts')->group(function () {
+    // Public routes
+    Route::get('/', [AlertController::class, 'index']);
+    Route::get('/map', [AlertController::class, 'getApprovedAlertsForMap']);
+    Route::get('/{id}', [AlertController::class, 'show']);
+
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [AlertController::class, 'store']);
+        Route::put('/{id}', [AlertController::class, 'update']);
+        Route::put('/{id}/approve', [AlertController::class, 'approve']);
+        Route::put('/{id}/reject', [AlertController::class, 'reject']);
+        Route::delete('/{id}', [AlertController::class, 'destroy']);
+        Route::post('/street/{id}/coordinates', [AlertController::class, 'updateStreetCoordinates']);
+    });
+});
+
+// Detection API routes (for testing)
+Route::prefix('detection')->group(function () {
+    Route::get('/health', [App\Http\Controllers\Api\DetectionController::class, 'health']);
+    Route::post('/detect', [App\Http\Controllers\Api\DetectionController::class, 'detect']);
+});
+
+// Telegram Test Route
+Route::get('/telegram/test', [App\Http\Controllers\Api\TelegramTestController::class, 'testSimpleMessage']);
+
+// Admin API routes
+Route::prefix('admin')->middleware(['auth:sanctum', App\Http\Middleware\CheckAdminRole::class])->group(function () {
+    // Dashboard
+    Route::get('/dashboard/statistics', [App\Http\Controllers\Api\Admin\AdminDashboardController::class, 'getStatistics']);
+    Route::get('/dashboard/activities', [App\Http\Controllers\Api\Admin\AdminDashboardController::class, 'getRecentActivities']);
+    
+    // Alert Management
+    Route::prefix('alerts')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'index']);
+        Route::put('/{id}/approve', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'approve']);
+        Route::put('/{id}/reject', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'reject']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminAlertController::class, 'destroy']);
+    });
+});
+
+// RSS News API routes
+Route::get('/news/traffic', [RssNewsController::class, 'getTrafficNews']);
