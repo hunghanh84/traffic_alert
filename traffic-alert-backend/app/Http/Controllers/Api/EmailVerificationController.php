@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\VerificationCodeMail;
+use App\Mail\WelcomeEmail;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -120,6 +122,15 @@ class EmailVerificationController extends Controller
         $user->verification_code = null;
         $user->verification_code_expires_at = null;
         $user->save();
+
+        // Gửi email chào mừng với link Telegram
+        try {
+            $telegramLink = env('TELEGRAM_BOT_LINK', 'https://t.me/your_bot_username');
+            Mail::to($user->email)->send(new WelcomeEmail($user->ten_dang_nhap, $telegramLink));
+        } catch (\Exception $e) {
+            // Log error nhưng vẫn trả về success vì verification đã thành công
+            Log::error('Failed to send welcome email: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
