@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue'),
     },
     {
+      path: '/verify-email',
+      name: 'verify-email',
+      component: () => import('../views/EmailVerificationView.vue'),
+    },
+    {
       path: '/alert',
       name: 'alert',
       component: () => import('../views/AlertView.vue'),

@@ -90,7 +90,16 @@ async function submitForm(e) {
     }
 
     // HIỂN THỊ THÔNG BÁO THÀNH CÔNG
-    successMessage.value = 'Đăng ký tài khoản thành công!'
+    successMessage.value = 'Đăng ký tài khoản thành công! Đang chuyển đến trang xác thực...'
+    
+    // Lưu email TRƯỚC KHI reset
+    const savedEmail = email.value
+    
+    // Lưu token và user info để auto-login sau khi verify
+    localStorage.setItem('pending_verification', JSON.stringify({
+      access_token: result.data.access_token,
+      user: result.data.user
+    }))
     
     // Reset form fields
     username.value = ''
@@ -100,8 +109,8 @@ async function submitForm(e) {
     confirmPassword.value = ''
 
     setTimeout(() => {
-      emit('success')
-    }, 2500)
+      emit('success', { email: savedEmail })
+    }, 2000)
 
   } catch (err) {
     error.value = err.message || 'Đăng ký thất bại. Vui lòng thử lại.'

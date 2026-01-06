@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\NguoiDung;
+use App\Mail\VerificationCodeMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -38,7 +41,6 @@ class AuthController extends Controller
         }
 
         // Tạo người dùng mới
-        // Model NguoiDung đã có Mutator để hash mật khẩu tự động
         $user = NguoiDung::create([
             'ten_dang_nhap' => $request->ten_dang_nhap,
             'email' => $request->email,
@@ -46,19 +48,33 @@ class AuthController extends Controller
             'so_dien_thoai' => $request->so_dien_thoai,
             'phuong_xa_id' => $request->phuong_xa_id,
             'khu_vuc_id' => $request->khu_vuc_id,
-            'vai_tro' => 'nguoi_dung', // Mặc định là người dùng thường
+            'vai_tro' => 'nguoi_dung',
             'trang_thai' => 'hoat_dong',
         ]);
+
+        // Tạo mã xác thực và gửi email
+        $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $user->verification_code = $code;
+        $user->verification_code_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        try {
+            Mail::to($user->email)->send(new VerificationCodeMail($code, $user->ten_dang_nhap));
+        } catch (\Exception $e) {
+            // Log error nhưng vẫn cho đăng ký thành công
+            Log::error('Failed to send verification email: ' . $e->getMessage());
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'message' => 'Đăng ký tài khoản thành công',
+            'message' => 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.',
             'data' => [
                 'user' => $user->load(['phuongXa.thanhPho', 'khuVuc']),
                 'access_token' => $token,
                 'token_type' => 'Bearer',
+                'email_sent' => true,
             ]
         ], 201);
     }

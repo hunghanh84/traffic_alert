@@ -5,9 +5,12 @@ import { ref } from 'vue'
 
 const router = useRouter()
 
-function onSuccess() {
-  // Sau khi đăng ký thành công, chuyển hướng người dùng về trang đăng nhập
-  router.push('/login')
+function onSuccess(data) {
+  // Sau khi đăng ký thành công, chuyển hướng đến trang xác thực email
+  router.push({
+    name: 'verify-email',
+    query: { email: data.email }
+  })
 }
 </script>
 

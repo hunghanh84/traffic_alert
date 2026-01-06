@@ -10,7 +10,7 @@ const route = useRoute()
 const user = ref(JSON.parse(localStorage.getItem('user_info') || 'null'))
 
 const isAuthPage = computed(() => {
-  return ['/login', '/register', '/forgot-password'].includes(route.path)
+  return ['/login', '/register', '/forgot-password', '/verify-email'].includes(route.path)
 })
 
 const isAdminPage = computed(() => {

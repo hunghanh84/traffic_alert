@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\AlertController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RssNewsController;
+use App\Http\Controllers\Api\EmailVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,13 @@ Route::prefix('auth')->group(function () {
         Route::post('/deactivate', [AuthController::class, 'deactivate']);
     });
 });
+
+// Email Verification routes
+Route::prefix('email')->group(function () {
+    Route::post('/send-code', [EmailVerificationController::class, 'sendVerificationCode']);
+    Route::post('/verify-code', [EmailVerificationController::class, 'verifyCode']);
+});
+
 
 // Location API routes
 Route::prefix('locations')->group(function () {
