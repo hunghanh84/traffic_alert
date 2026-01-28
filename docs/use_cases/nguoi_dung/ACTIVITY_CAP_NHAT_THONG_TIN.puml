@@ -1,0 +1,32 @@
+@startuml Activity Diagram - Cập nhật thông tin cá nhân
+title Sơ đồ hoạt động - Cập nhật thông tin cá nhân
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Tài khoản";
+
+if () then
+  :Chọn "Hủy";
+  
+else ()
+  fork
+    :Nhập tên đăng nhập;
+  fork again
+    :Nhập số điện thoại;
+  fork again
+    :Nhập email;
+  fork again
+    :Chọn phường/xã;
+  fork again
+    :Chọn khu vực;
+  end fork
+  
+  :Chọn "Cập nhật";
+  
+endif
+
+stop
+
+@enduml

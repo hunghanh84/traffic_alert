@@ -1,0 +1,55 @@
+@startuml Activity Diagram - Admin - Quản lý dữ liệu địa lý
+title Sơ đồ hoạt động - Admin - Quản lý dữ liệu địa lý
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý dữ liệu địa lý";
+
+if () then
+  :Chọn "Quản lý phường/xã";
+  
+  :CRUD phường/xã;
+  
+elseif () then
+  :Chọn "Quản lý khu vực";
+  
+  :CRUD khu vực;
+  
+elseif () then
+  :Chọn "Quản lý đường";
+  
+  :CRUD đường;
+  
+elseif () then
+  :Chọn "Cập nhật tọa độ đường";
+  
+  if () then
+    :Upload file GeoJSON;
+  else ()
+    :Nhập tọa độ thủ công;
+  endif
+  
+  :Lưu tọa độ;
+  
+else ()
+  :Chọn "Quản lý mức độ sự kiện";
+  
+  fork
+    :Cập nhật tên mức độ;
+  fork again
+    :Cập nhật mô tả;
+  fork again
+    :Cập nhật độ ưu tiên;
+  fork again
+    :Cập nhật màu sắc hiển thị;
+  end fork
+  
+  :Lưu thay đổi;
+  
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,86 @@
+@startuml Sơ đồ nghiệp vụ - Hệ thống cảnh báo giao thông Đà Nẵng
+skinparam defaultFontName Arial
+skinparam defaultFontSize 9
+skinparam swimlaneWidth 200
+
+|#LightBlue|Khách vãng lai|
+start
+:Xem bản đồ;
+:Xem danh sách cảnh báo;
+:Xem chi tiết;
+:Tìm kiếm/Lọc;
+
+if (Đăng ký?) then (Có)
+  |#LightYellow|Người dùng|
+  :Đăng ký tài khoản;
+else (Không)
+  |#LightBlue|Khách vãng lai|
+  stop
+endif
+
+|#LightYellow|Người dùng|
+:Đăng nhập;
+
+fork
+  :Xem bản đồ;
+fork again
+  :Tạo cảnh báo;
+fork again
+  :Sửa cảnh báo;
+fork again
+  :Xóa cảnh báo;
+fork again
+  :Xem lịch sử;
+fork again
+  :Nhận thông báo;
+fork again
+  :Tìm kiếm/Lọc;
+end fork
+
+|#LightGreen|Quản trị viên|
+:Đăng nhập;
+:Xem Dashboard;
+
+fork
+  :Duyệt cảnh báo;
+fork again
+  :Từ chối cảnh báo;
+fork again
+  :Quản lý người dùng;
+fork again
+  :Quản lý địa lý;
+fork again
+  :Quản lý thông báo;
+fork again
+  :Quản lý sự kiện;
+fork again
+  :Quản lý kết quả AI;
+fork again
+  :Thống kê báo cáo;
+end fork
+
+|#LightCyan|Hệ thống|
+:Nhận hình ảnh;
+:Phân tích AI;
+:Phát hiện sự cố;
+
+if (Tin cậy > 70%?) then (Có)
+  :Tạo cảnh báo tự động;
+  |#LightGreen|Quản trị viên|
+  :Xác minh AI;
+  if (Đúng?) then (Có)
+    |#LightCyan|Hệ thống|
+    :Hiển thị bản đồ;
+  else (Không)
+    :Xóa kết quả;
+  endif
+else (Không)
+  :Lưu log;
+endif
+
+:Cập nhật bản đồ;
+:Gửi thông báo;
+
+stop
+
+@enduml

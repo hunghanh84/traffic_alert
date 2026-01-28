@@ -1,0 +1,39 @@
+@startuml Activity Diagram - Đăng ký tài khoản
+title Sơ đồ hoạt động - Đăng ký tài khoản
+
+start
+
+:Truy cập trang web;
+
+:Chọn "Đăng ký";
+
+if () then
+  :Chọn "Hủy";
+  
+elseif () then
+  :Chọn "Đăng nhập ngay";
+  
+else ()
+  fork
+    :Nhập tên đăng nhập;
+  fork again
+    :Nhập email;
+  fork again
+    :Nhập mật khẩu;
+  fork again
+    :Nhập số điện thoại;
+  fork again
+    :Chọn phường/xã;
+  end fork
+  
+  :Chọn "Đăng ký";
+  
+  :Gửi mã OTP qua email;
+  
+  :Chuyển sang trang xác thực email;
+  
+endif
+
+stop
+
+@enduml

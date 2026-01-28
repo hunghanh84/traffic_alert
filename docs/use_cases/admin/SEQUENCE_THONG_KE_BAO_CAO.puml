@@ -1,0 +1,39 @@
+@startuml Sequence Diagram - Admin - Thống kê báo cáo
+title sd_ThongKeBaoCao
+
+actor "Admin" as a
+participant "V_ThongKe" as b
+participant "C_ReportController" as c
+participant "M_DuLieu" as d
+
+a -> b : 1: load()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: chonLoaiBaoCao()
+a -> b : 4: chonTieuChi()
+a -> b : 5: clickXem()
+activate b
+b -> c : 6: layThongKe(tieuChi)
+activate c
+c -> d : 7: select(where)
+activate d
+d --> c : 8: duLieuThongKe
+deactivate d
+c --> b : 9: duLieu
+deactivate c
+b --> a : 10: hienThiBieuDo()
+deactivate b
+
+a -> b : 11: clickXuatBaoCao()
+activate b
+b -> c : 12: xuatFile(format)
+activate c
+c -> c : 13: taoFile()
+c --> b : 14: file
+deactivate c
+b --> a : 15: taiXuong()
+deactivate b
+
+@enduml

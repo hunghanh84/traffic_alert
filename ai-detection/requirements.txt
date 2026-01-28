@@ -1,0 +1,8 @@
+opencv-python==4.8.1.78
+ultralytics==8.1.0
+yt-dlp==2023.12.30
+pafy==0.5.5
+youtube-dl==2021.12.17
+requests==2.31.0
+python-dotenv==1.0.0
+numpy==1.24.3

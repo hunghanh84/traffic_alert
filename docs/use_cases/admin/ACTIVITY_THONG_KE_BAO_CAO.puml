@@ -1,0 +1,55 @@
+@startuml Activity Diagram - Admin - Thống kê báo cáo
+title Sơ đồ hoạt động - Admin - Thống kê báo cáo
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Thống kê báo cáo";
+
+if () then
+  :Chọn "Báo cáo theo thời gian";
+  
+  fork
+    :Chọn khoảng thời gian;
+  fork again
+    :Chọn loại báo cáo
+    (Cảnh báo/Sự kiện/Người dùng);
+  end fork
+  
+  :Hiển thị biểu đồ;
+  
+elseif () then
+  :Chọn "Báo cáo theo vị trí";
+  
+  fork
+    :Chọn phường/xã;
+  fork again
+    :Chọn khu vực;
+  fork again
+    :Chọn đường;
+  end fork
+  
+  :Hiển thị biểu đồ;
+  
+elseif () then
+  :Chọn "Báo cáo theo loại";
+  
+  :Chọn loại cảnh báo/sự kiện;
+  
+  :Hiển thị biểu đồ;
+  
+else ()
+  :Chọn "Xuất báo cáo";
+  
+  :Chọn định dạng (PDF/Excel);
+  
+  :Tạo file báo cáo;
+  
+  :Tải xuống file;
+  
+endif
+
+stop
+
+@enduml

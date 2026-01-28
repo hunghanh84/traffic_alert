@@ -19,15 +19,15 @@ const weatherInfo = ref({
 const fetchRecentAlerts = async () => {
   try {
     isLoadingAlerts.value = true
-    const response = await fetch('http://127.0.0.1:8000/api/alerts')
+    const response = await fetch('http://127.0.0.1:8000/api/alerts/public')
     const result = await response.json()
     
     if (result.success) {
-      // Store ALL alerts for statistics (including pending)
+      // Public API already returns only approved alerts
       allAlerts.value = result.data
       
-      // Filter only approved alerts for display
-      const approvedAlerts = result.data.filter(alert => alert.trang_thai === 'da_duyet')
+      // No need to filter, all are approved
+      const approvedAlerts = result.data
       recentAlerts.value = approvedAlerts.slice(0, 2) // Show only 2 most recent
       console.log('🚨 Loaded alerts:', result.data.length, 'total,', approvedAlerts.length, 'approved')
     }

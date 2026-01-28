@@ -1,0 +1,37 @@
+@startuml Sequence Diagram - Admin - Quản lý cảnh báo
+title sd_QuanLyCanhBao
+
+actor "Admin" as a
+participant "V_QuanLyCanhBao" as b
+participant "C_AlertController" as c
+participant "M_BaiDang" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSachChoDuyet()
+activate c
+c -> d : 3: select(trangThai='cho_duyet')
+activate d
+d --> c : 4: danhSachCanhBao
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: chonCanhBao()
+a -> b : 8: clickDuyet(id)
+activate b
+b -> c : 9: duyetCanhBao(id)
+activate c
+c -> d : 10: update(trangThai='da_duyet')
+activate d
+d --> c : 11: ketQua
+deactivate d
+c -> c : 12: guiThongBao()
+c --> b : 13: thanhCong
+deactivate c
+b --> a : 14: hienThiThongBao()
+deactivate b
+
+@enduml

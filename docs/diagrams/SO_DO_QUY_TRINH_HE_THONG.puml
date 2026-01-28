@@ -1,0 +1,73 @@
+@startuml Sơ đồ Quy trình Hệ thống Cảnh báo Giao thông
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+
+|Khách vãng lai|
+start
+:Bắt đầu;
+:Xem bản đồ\ncảnh báo;
+:Xem danh\nsách cảnh\nbáo;
+:Lọc - Tìm kiếm;
+:Xem tin tức;
+:Kết thúc;
+stop
+
+|Người dùng|
+start
+:Bắt đầu;
+if (Đã có tài\nkhoan?) then (Có)
+  :Đăng nhập;
+else (Không)
+  :Đăng ký;
+  :Xác thực\nemail;
+endif
+:Xem bản\nđồ cảnh báo;
+if (Tạo cảnh\nbáo?) then (Có)
+  :Tạo cảnh\nbáo mới;
+  :Upload\nảnh/video;
+  :Chờ duyệt;
+else (Không)
+  :Thiết lập\ncảnh báo tự\nđộng;
+  :Nhận\nthông báo;
+  :Cập nhật\nthông tin\ncá nhân;
+endif
+:Kết thúc;
+stop
+
+|Quản trị viên|
+start
+:Bắt đầu;
+:Đăng nhập;
+:Xem\nDashboard;
+:Duyệt cảnh\nbáo;
+:Cập nhật\ntrạng thái;
+fork
+  :Quản lý\nngười dùng;
+fork again
+  :Quản lý sự\nkiện;
+fork again
+  :Quản lý cảnh\nbáo;
+fork again
+  :Cập nhật tọa\nđộ đường;
+fork again
+  :Thống kê\nbáo cáo;
+end fork
+:Xét duyệt;
+:Kết thúc;
+stop
+
+|Hệ thống AI|
+start
+:Bắt đầu;
+:Nhận dữ liệu\ncamera;
+:Phát hiện\nsự cố;
+if (Phát hiện\nsự cố?) then (Có)
+  :Tạo cảnh\nbáo tự động;
+  :Gửi thông\nbáo;
+  :Cập nhật\nbản đồ cũng;
+else (Không)
+endif
+:Kết thúc;
+stop
+
+@enduml

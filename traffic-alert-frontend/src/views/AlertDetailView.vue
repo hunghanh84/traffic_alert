@@ -173,12 +173,12 @@ onMounted(() => {
             <div class="media-gallery">
               <div v-for="media in alert.media" :key="media.id" class="media-item">
                 <img
-                  :src="media.url"
+                  :src="media.duong_dan"
                   :alt="`Ảnh ${typeLabels[alert.loai_canh_bao]}`"
                   class="media-image"
                 />
                 <div class="media-info">
-                  <span class="media-format">{{ media.dinh_dang?.toUpperCase() }}</span>
+                  <span class="media-format">{{ media.ten_file?.toUpperCase() }}</span>
                 </div>
               </div>
             </div>

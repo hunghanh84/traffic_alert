@@ -1,0 +1,109 @@
+@startuml Activity Diagram - Đăng nhập
+title Sơ đồ hoạt động - Chức năng Đăng nhập
+
+|#BBDEFB|Người dùng|
+start
+:Truy cập trang đăng nhập;
+
+:Nhập email;
+note right
+  Validate realtime:
+  - Đúng định dạng email
+  - Không để trống
+end note
+
+:Nhập mật khẩu;
+note right
+  - Hiển thị/ẩn mật khẩu
+  - Tối thiểu 8 ký tự
+end note
+
+:Nhấn nút "Đăng nhập";
+
+|#E8F5E9|Hệ thống|
+
+:Kiểm tra định dạng email;
+
+if (Email đúng định dạng?) then (Không)
+  :Hiển thị lỗi
+  "Email không đúng định dạng";
+  stop
+else (Có)
+endif
+
+:Tìm kiếm email trong database;
+
+if (Email tồn tại?) then (Không)
+  :Hiển thị lỗi
+  "Email hoặc mật khẩu không chính xác";
+  note right
+    Không tiết lộ cụ thể
+    để bảo mật
+  end note
+  stop
+else (Có)
+endif
+
+:Lấy thông tin người dùng;
+
+:Kiểm tra mật khẩu
+(bcrypt verify);
+
+if (Mật khẩu đúng?) then (Không)
+  :Hiển thị lỗi
+  "Email hoặc mật khẩu không chính xác";
+  stop
+else (Có)
+endif
+
+:Kiểm tra email đã xác thực;
+
+if (Email đã xác thực?) then (Không)
+  :Hiển thị lỗi
+  "Vui lòng xác thực email";
+  :Hiển thị nút
+  "Gửi lại mã xác thực";
+  stop
+else (Có)
+endif
+
+:Kiểm tra trạng thái tài khoản;
+
+if (Tài khoản active?) then (Không)
+  :Hiển thị lỗi
+  "Tài khoản đã bị vô hiệu hóa
+  Vui lòng liên hệ Admin";
+  stop
+else (Có)
+endif
+
+:Tạo token xác thực
+(Laravel Sanctum);
+
+:Lưu thông tin session;
+
+:Lưu token vào localStorage;
+
+:Hiển thị thông báo
+"Đăng nhập thành công";
+
+if (Vai trò?) then (Admin)
+  :Chuyển hướng đến
+  Admin Dashboard;
+  
+  |#BBDEFB|Người dùng|
+  :Xem Dashboard;
+  :Quản lý hệ thống;
+  
+else (User)
+  :Chuyển hướng đến
+  Trang chủ;
+  
+  |#BBDEFB|Người dùng|
+  :Xem bản đồ cảnh báo;
+  :Sử dụng các tính năng;
+endif
+
+stop
+
+@enduml

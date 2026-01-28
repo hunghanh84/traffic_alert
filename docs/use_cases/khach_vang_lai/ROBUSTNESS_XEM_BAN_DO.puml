@@ -1,0 +1,17 @@
+@startuml Robustness Diagram - Xem bản đồ cảnh báo
+title Sơ đồ phân tích Robustness - Xem bản đồ cảnh báo
+
+actor "Khách vãng lai" as Guest
+
+boundary "Trang bản đồ" as MapPage
+control "Xử lý hiển thị bản đồ" as MapControl
+entity "Bài đăng" as AlertEntity
+
+Guest -> MapPage : Truy cập "Bản đồ cảnh báo"
+MapPage -> MapControl : Lấy cảnh báo đã duyệt
+MapControl -> AlertEntity : Lấy danh sách cảnh báo
+AlertEntity -> MapControl : Trả về dữ liệu
+MapControl -> MapPage : Hiển thị marker trên bản đồ
+MapPage -> Guest : Hiển thị bản đồ với cảnh báo
+
+@enduml

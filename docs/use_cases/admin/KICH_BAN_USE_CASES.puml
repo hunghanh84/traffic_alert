@@ -1,0 +1,126 @@
+# BẢNG KỊCH BẢN USE CASES - ADMIN
+
+## 1. ĐĂNG NHẬP
+
+*(Giống use case Đăng nhập của Người dùng, nhưng vai_tro = 'admin' → chuyển đến Dashboard)*
+
+---
+
+## 2. XEM DASHBOARD
+
+| Use case name | Xem Dashboard |
+|---------------|-----------|
+| **Description** | Admin xem thống kê tổng quan và hoạt động gần đây của hệ thống |
+| **Actors** | Admin |
+| **Input** | Không |
+| **Output** | Hiển thị Dashboard với thống kê và biểu đồ |
+| **Basic Flow** | 1. Admin đăng nhập<br>2. Hệ thống chuyển đến Dashboard<br>3. Hệ thống hiển thị thống kê tổng quan<br>4. Hệ thống hiển thị hoạt động gần đây<br>5. Hệ thống hiển thị biểu đồ thống kê<br>=> Kết thúc use case |
+| **Alternative Flow** | **3a.** Admin chọn khoảng thời gian để xem thống kê |
+| **Exception Flow** | **2a.** Lỗi tải dữ liệu => Hiển thị "Không thể tải Dashboard" |
+
+---
+
+## 3. QUẢN LÝ CẢNH BÁO
+
+| Use case name | Quản lý cảnh báo |
+|---------------|-----------|
+| **Description** | Admin duyệt, từ chối hoặc xóa cảnh báo |
+| **Actors** | Admin |
+| **Input** | Lý do từ chối (nếu từ chối) |
+| **Output** | Thông báo "Duyệt/Từ chối/Xóa cảnh báo thành công" |
+| **Basic Flow** | 1. Admin chọn "Quản lý cảnh báo"<br>2. Hệ thống hiển thị danh sách cảnh báo chờ duyệt<br>3. Admin chọn một cảnh báo<br>4. Hệ thống hiển thị chi tiết cảnh báo<br>5. Admin chọn hành động (Duyệt/Từ chối/Xóa)<br>6. Hệ thống thực hiện hành động<br>7. Hệ thống gửi thông báo cho người tạo<br>8. Hệ thống hiển thị thông báo thành công<br>=> Kết thúc use case |
+| **Alternative Flow** | **5a.** Admin chọn "Duyệt" => Cảnh báo hiển thị công khai<br>**5b.** Admin chọn "Từ chối" => Nhập lý do từ chối<br>**5c.** Admin chọn "Xóa" => Xác nhận xóa |
+| **Exception Flow** | **3a.** Admin thoát trang => Kết thúc use case<br>**6a.** Lỗi cập nhật => Hiển thị "Không thể thực hiện. Vui lòng thử lại" |
+
+---
+
+## 4. QUẢN LÝ NGƯỜI DÙNG
+
+| Use case name | Quản lý người dùng |
+|---------------|-----------|
+| **Description** | Admin quản lý tài khoản người dùng (CRUD + Toggle status + Phân quyền) |
+| **Actors** | Admin |
+| **Input** | Thông tin người dùng (tên, email, mật khẩu, vai trò) |
+| **Output** | Thông báo "Tạo/Cập nhật/Xóa người dùng thành công" |
+| **Basic Flow** | 1. Admin chọn "Quản lý người dùng"<br>2. Hệ thống hiển thị danh sách người dùng<br>3. Admin chọn hành động (Tạo/Cập nhật/Xóa/Toggle/Phân quyền)<br>4. Hệ thống thực hiện hành động<br>5. Hệ thống hiển thị thông báo thành công<br>=> Kết thúc use case |
+| **Alternative Flow** | **3a.** Tạo mới => Nhập thông tin đầy đủ<br>**3b.** Cập nhật => Chỉnh sửa thông tin<br>**3c.** Toggle status => Bật/Tắt tài khoản<br>**3d.** Phân quyền => Thay đổi vai trò (user ↔ admin) |
+| **Exception Flow** | **3a.** Admin thoát trang => Kết thúc use case<br>**4a.** Email đã tồn tại => Hiển thị lỗi "Email đã được sử dụng"<br>**4b.** Không thể xóa chính mình => Hiển thị lỗi "Không thể xóa tài khoản đang đăng nhập" |
+
+---
+
+## 5. QUẢN LÝ SỰ KIỆN GIAO THÔNG
+
+| Use case name | Quản lý sự kiện giao thông |
+|---------------|-----------|
+| **Description** | Admin quản lý sự kiện giao thông (CRUD + Toggle status) |
+| **Actors** | Admin |
+| **Input** | Loại sự kiện, mức độ, đường, mô tả, thời gian bắt đầu/kết thúc |
+| **Output** | Thông báo "Tạo/Cập nhật/Xóa sự kiện thành công" |
+| **Basic Flow** | 1. Admin chọn "Quản lý sự kiện giao thông"<br>2. Hệ thống hiển thị danh sách sự kiện<br>3. Admin chọn hành động (Tạo/Cập nhật/Xóa/Toggle)<br>4. Hệ thống thực hiện hành động<br>5. Hệ thống hiển thị thông báo thành công<br>=> Kết thúc use case |
+| **Alternative Flow** | **3a.** Tạo mới => Nhập thông tin sự kiện<br>**3b.** Cập nhật => Chỉnh sửa thông tin<br>**3c.** Toggle status => Bật/Tắt sự kiện |
+| **Exception Flow** | **3a.** Admin thoát trang => Kết thúc use case<br>**4a.** Thời gian không hợp lệ => Hiển thị lỗi "Thời gian kết thúc phải sau thời gian bắt đầu" |
+
+---
+
+## 6. QUẢN LÝ KẾT QUẢ AI
+
+| Use case name | Quản lý kết quả AI |
+|---------------|-----------|
+| **Description** | Admin xem, xác minh hoặc xóa kết quả AI detection |
+| **Actors** | Admin |
+| **Input** | Lọc theo độ tin cậy, nhãn phát hiện |
+| **Output** | Danh sách kết quả AI |
+| **Basic Flow** | 1. Admin chọn "Quản lý kết quả AI"<br>2. Hệ thống hiển thị danh sách kết quả AI<br>3. Admin lọc kết quả (tùy chọn)<br>4. Admin chọn một kết quả<br>5. Hệ thống hiển thị chi tiết (raw JSON, media, độ tin cậy)<br>6. Admin chọn "Xác minh" hoặc "Xóa"<br>7. Hệ thống thực hiện hành động<br>8. Hệ thống hiển thị thông báo thành công<br>=> Kết thúc use case |
+| **Alternative Flow** | **3a.** Lọc theo độ tin cậy > 80%<br>**3b.** Lọc theo nhãn phát hiện cụ thể<br>**6a.** Xác minh => Đánh dấu kết quả chính xác<br>**6b.** Xóa => Xóa kết quả sai |
+| **Exception Flow** | **4a.** Admin thoát trang => Kết thúc use case |
+
+---
+
+## 7. QUẢN LÝ THÔNG BÁO
+
+| Use case name | Quản lý thông báo |
+|---------------|-----------|
+| **Description** | Admin tạo và gửi thông báo cho người dùng |
+| **Actors** | Admin |
+| **Input** | Tiêu đề, nội dung, đối tượng nhận, kênh gửi |
+| **Output** | Thông báo "Gửi thông báo thành công" |
+| **Basic Flow** | 1. Admin chọn "Quản lý thông báo"<br>2. Admin chọn "Tạo thông báo mới"<br>3. Admin nhập tiêu đề và nội dung<br>4. Admin chọn đối tượng nhận<br>5. Admin chọn kênh gửi (Email/Telegram/App)<br>6. Admin nhấn "Gửi thông báo"<br>7. Hệ thống gửi thông báo<br>8. Hệ thống hiển thị "Gửi thành công"<br>=> Kết thúc use case |
+| **Alternative Flow** | **2a.** Admin chọn "Xem lịch sử" => Hiển thị danh sách đã gửi<br>**2b.** Admin chọn "Xem thống kê" => Hiển thị tỷ lệ gửi/mở/click<br>**4a.** Gửi cho tất cả người dùng<br>**4b.** Gửi theo khu vực<br>**4c.** Gửi cho người dùng cụ thể |
+| **Exception Flow** | **3a.** Admin thoát trang => Không gửi => Kết thúc use case<br>**7a.** Lỗi gửi email => Hiển thị "Không thể gửi thông báo" |
+
+---
+
+## 8. QUẢN LÝ DỮ LIỆU ĐỊA LÝ
+
+| Use case name | Quản lý dữ liệu địa lý |
+|---------------|-----------|
+| **Description** | Admin quản lý dữ liệu địa lý (Phường/xã, Khu vực, Đường, Tọa độ, Mức độ) |
+| **Actors** | Admin |
+| **Input** | Thông tin địa lý, file GeoJSON |
+| **Output** | Thông báo "Cập nhật dữ liệu thành công" |
+| **Basic Flow** | 1. Admin chọn "Quản lý dữ liệu địa lý"<br>2. Admin chọn loại dữ liệu (Phường/xã, Khu vực, Đường, Tọa độ, Mức độ)<br>3. Admin thực hiện CRUD<br>4. Hệ thống lưu thay đổi<br>5. Hệ thống hiển thị thông báo thành công<br>=> Kết thúc use case |
+| **Alternative Flow** | **2a.** Quản lý phường/xã => CRUD phường/xã<br>**2b.** Quản lý khu vực => CRUD khu vực<br>**2c.** Quản lý đường => CRUD đường<br>**2d.** Cập nhật tọa độ => Upload GeoJSON hoặc nhập thủ công<br>**2e.** Quản lý mức độ => Cập nhật tên, mô tả, độ ưu tiên, màu sắc |
+| **Exception Flow** | **3a.** Admin thoát trang => Kết thúc use case<br>**4a.** File GeoJSON không hợp lệ => Hiển thị lỗi "File không đúng định dạng" |
+
+---
+
+## 9. THỐNG KÊ BÁO CÁO
+
+| Use case name | Thống kê báo cáo |
+|---------------|-----------|
+| **Description** | Admin xem thống kê và xuất báo cáo |
+| **Actors** | Admin |
+| **Input** | Khoảng thời gian, vị trí, loại báo cáo |
+| **Output** | Biểu đồ thống kê hoặc file báo cáo (PDF/Excel) |
+| **Basic Flow** | 1. Admin chọn "Thống kê báo cáo"<br>2. Admin chọn loại báo cáo<br>3. Admin chọn tiêu chí lọc<br>4. Hệ thống hiển thị biểu đồ/báo cáo<br>5. Admin xuất file (tùy chọn)<br>=> Kết thúc use case |
+| **Alternative Flow** | **2a.** Báo cáo theo thời gian => Chọn khoảng thời gian<br>**2b.** Báo cáo theo vị trí => Chọn phường/xã, khu vực, đường<br>**2c.** Báo cáo theo loại => Chọn loại cảnh báo/sự kiện<br>**5a.** Xuất PDF<br>**5b.** Xuất Excel |
+| **Exception Flow** | **3a.** Admin thoát trang => Kết thúc use case<br>**4a.** Không có dữ liệu => Hiển thị "Không có dữ liệu trong khoảng thời gian này" |
+
+---
+
+## TỔNG KẾT
+
+- **Tổng số use cases:** 9 (bao gồm Đăng nhập)
+- **Actors:** Admin
+- **Thư mục:** `docs/use_cases/admin/`
+- **File PlantUML:** 8 file Activity Diagram (Đăng nhập dùng chung với Người dùng)

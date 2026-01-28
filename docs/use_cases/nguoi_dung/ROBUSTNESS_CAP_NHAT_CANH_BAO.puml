@@ -1,0 +1,28 @@
+@startuml Robustness Diagram - Cập nhật cảnh báo
+title Sơ đồ phân tích Robustness - Cập nhật cảnh báo
+
+actor "Người dùng" as User
+
+boundary "Trang cảnh báo của tôi" as MyAlertsPage
+control "Xử lý cập nhật cảnh báo" as UpdateAlertControl
+entity "Bài đăng" as AlertEntity
+
+User -> MyAlertsPage : Chọn "Cảnh báo của tôi"
+MyAlertsPage -> UpdateAlertControl : Lấy danh sách
+UpdateAlertControl -> AlertEntity : Lấy cảnh báo của user
+AlertEntity -> UpdateAlertControl : Trả về danh sách
+UpdateAlertControl -> MyAlertsPage : Hiển thị danh sách
+
+User -> MyAlertsPage : Chọn cảnh báo muốn sửa
+MyAlertsPage -> UpdateAlertControl : Kiểm tra trạng thái
+UpdateAlertControl -> AlertEntity : Kiểm tra
+AlertEntity -> UpdateAlertControl : Cho phép sửa/Không
+
+User -> MyAlertsPage : Chỉnh sửa thông tin
+MyAlertsPage -> UpdateAlertControl : Gửi dữ liệu
+UpdateAlertControl -> AlertEntity : Cập nhật
+AlertEntity -> UpdateAlertControl : Kết quả
+UpdateAlertControl -> MyAlertsPage : Thông báo
+MyAlertsPage -> User : Hiển thị kết quả
+
+@enduml

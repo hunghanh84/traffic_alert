@@ -1,0 +1,232 @@
+@startuml Activity Diagram - Hệ thống Cảnh báo Giao thông
+title Sơ đồ Activity - Hệ thống Cảnh báo Giao thông Thông minh
+
+|#E0F7FA|Khách vãng lai|
+start
+:Truy cập hệ thống;
+:Xem bản đồ cảnh báo;
+:Xem tin tức giao thông;
+
+if (Muốn tạo cảnh báo?) then (Có)
+  :Đăng ký tài khoản;
+  :Nhập thông tin
+  (email, mật khẩu, SĐT, phường/xã);
+  :Nhận mã OTP qua email;
+  :Xác thực email;
+  note right: Chuyển sang Người dùng
+  stop
+else (Không)
+  stop
+endif
+
+|#BBDEFB|Người dùng|
+start
+:Truy cập hệ thống;
+
+if (Đã có tài khoản?) then (Có)
+  :Đăng nhập;
+else (Không)
+  :Đăng ký;
+  :Xác thực email;
+  :Đăng nhập;
+endif
+
+:Xem bản đồ cảnh báo;
+:Xem danh sách cảnh báo;
+
+fork
+  :Lọc và tìm kiếm;
+  :Xem chi tiết cảnh báo;
+fork again
+  :Xem tin tức giao thông;
+end fork
+
+if (Muốn tạo cảnh báo?) then (Có)
+  :Tạo cảnh báo mới;
+  :Chọn loại cảnh báo
+  (traffic/flood);
+  :Chọn mức độ
+  (low/medium/high/critical);
+  :Chọn đường;
+  :Nhập mô tả;
+  
+  if (Có ảnh/video?) then (Có)
+    :Upload media;
+  endif
+  
+  :Gửi cảnh báo;
+  note right
+    Trạng thái: chờ duyệt
+    Chờ Admin phê duyệt
+  end note
+  
+else (Không)
+endif
+
+if (Muốn nhận thông báo tự động?) then (Có)
+  :Thiết lập cảnh báo tự động;
+  :Chọn đường theo dõi;
+  :Chọn mức độ tối thiểu;
+  :Thiết lập thời gian;
+  :Chọn ngày trong tuần;
+  :Chọn kênh nhận
+  (Email/Telegram);
+  :Kích hoạt;
+  note right: Nhận thông báo khi có cảnh báo mới
+else (Không)
+endif
+
+:Cập nhật thông tin cá nhân;
+:Đăng xuất;
+stop
+
+|#C8E6C9|Admin|
+start
+:Đăng nhập;
+:Xem Dashboard;
+
+fork
+  :Xem thống kê tổng quan;
+fork again
+  :Xem hoạt động gần đây;
+end fork
+
+partition "Quản lý cảnh báo" {
+  :Xem danh sách cảnh báo;
+  :Lọc theo trạng thái;
+  
+  while (Có cảnh báo chờ duyệt?) is (Có)
+    :Xem chi tiết cảnh báo;
+    :Kiểm tra thông tin;
+    
+    if (Cảnh báo hợp lệ?) then (Có)
+      :Duyệt cảnh báo;
+      :Cập nhật trạng thái
+      → "đã duyệt";
+      :Gửi thông báo cho
+      người dùng đã đăng ký;
+      note right
+        Cảnh báo hiển thị công khai
+        Người dùng nhận thông báo
+      end note
+    else (Không)
+      :Từ chối cảnh báo;
+      :Nhập lý do (tùy chọn);
+      :Cập nhật trạng thái
+      → "từ chối";
+    endif
+  endwhile (Không)
+}
+
+partition "Quản lý người dùng" {
+  :Xem danh sách người dùng;
+  
+  fork
+    :Tạo người dùng mới;
+  fork again
+    :Cập nhật thông tin người dùng;
+  fork again
+    :Bật/Tắt trạng thái người dùng;
+  fork again
+    :Phân quyền (user ↔ admin);
+  fork again
+    :Xóa người dùng;
+  end fork
+}
+
+partition "Quản lý thông báo" {
+  :Xem danh sách thông báo;
+  :Xem lịch sử gửi thông báo;
+  
+  fork
+    :Tạo thông báo mới;
+    :Chọn đối tượng nhận;
+    :Chọn kênh gửi
+    (Email/Telegram/App);
+    :Gửi thông báo;
+  fork again
+    :Xem thống kê thông báo;
+    :Tỷ lệ gửi thành công;
+  end fork
+}
+
+partition "Quản lý kết quả AI" {
+  :Xem danh sách kết quả AI;
+  :Lọc theo độ tin cậy;
+  :Lọc theo nhãn phát hiện;
+  
+  while (Có kết quả chưa xác minh?) is (Có)
+    :Xem chi tiết kết quả AI;
+    :Xem raw JSON;
+    :Xem media gốc;
+    
+    if (Kết quả chính xác?) then (Có)
+      :Xác minh kết quả AI;
+      :Đánh dấu "đã xác minh";
+    else (Không)
+      :Xóa kết quả AI sai;
+    endif
+  endwhile (Không)
+  
+  note right
+    Giúp cải thiện độ chính xác
+    của AI model
+  end note
+}
+
+partition "Quản lý dữ liệu địa lý" {
+  :Truy cập quản lý dữ liệu địa lý;
+  
+  fork
+    :Quản lý phường/xã;
+    :Thêm/Sửa/Xóa phường/xã;
+  fork again
+    :Quản lý khu vực;
+    :Thêm/Sửa/Xóa khu vực;
+  fork again
+    :Quản lý đường;
+    :Thêm/Sửa/Xóa đường;
+  fork again
+    :Cập nhật tọa độ đường;
+    :Upload file GeoJSON;
+    :Hoặc nhập tọa độ thủ công;
+    note right
+      Tọa độ dùng để
+      hiển thị trên bản đồ
+    end note
+  fork again
+    :Quản lý mức độ cảnh báo;
+    :Cấu hình màu sắc;
+    :Cấu hình độ ưu tiên;
+  end fork
+}
+
+:Thống kê báo cáo;
+:Đăng xuất;
+stop
+
+|#E1BEE7|Hệ thống AI|
+start
+:Nhận dữ liệu từ camera;
+:Phân tích ảnh/video;
+
+if (Phát hiện sự cố?) then (Có)
+  :Lưu kết quả AI
+  (nhãn, độ tin cậy);
+  
+  if (Độ tin cậy > 80%?) then (Có)
+    :Tạo cảnh báo tự động;
+    note right
+      Trạng thái: chờ duyệt
+      Cần Admin xác minh
+    end note
+  endif
+  
+else (Không)
+  :Tiếp tục giám sát;
+endif
+
+:Cập nhật bản đồ (mỗi 30s);
+stop
+
+@enduml

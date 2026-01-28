@@ -1,0 +1,30 @@
+@startuml Sequence Diagram - Admin - Xem Dashboard
+title sd_XemDashboard
+
+actor "Admin" as a
+participant "V_Dashboard" as b
+participant "C_DashboardController" as c
+participant "M_ThongKe" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layThongKe()
+activate c
+c -> d : 3: demCanhBao()
+activate d
+d --> c : 4: soCanhBao
+deactivate d
+c -> d : 5: demNguoiDung()
+activate d
+d --> c : 6: soNguoiDung
+deactivate d
+c -> d : 7: demSuKien()
+activate d
+d --> c : 8: soSuKien
+deactivate d
+c --> b : 9: duLieuThongKe
+deactivate c
+b --> a : 10: hienThiDashboard()
+deactivate b
+
+@enduml

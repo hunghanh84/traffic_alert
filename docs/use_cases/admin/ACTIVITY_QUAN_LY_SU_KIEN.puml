@@ -1,0 +1,57 @@
+@startuml Activity Diagram - Admin - Quản lý sự kiện giao thông
+title Sơ đồ hoạt động - Admin - Quản lý sự kiện giao thông
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý sự kiện giao thông";
+
+:Hiển thị danh sách sự kiện;
+
+if () then
+  :Chọn "Tạo sự kiện mới";
+  
+  fork
+    :Chọn loại sự kiện;
+  fork again
+    :Chọn mức độ;
+  fork again
+    :Chọn đường;
+  fork again
+    :Nhập mô tả;
+  fork again
+    :Chọn thời gian bắt đầu;
+  fork again
+    :Chọn thời gian kết thúc;
+  end fork
+  
+  :Chọn "Tạo";
+  
+elseif () then
+  :Chọn sự kiện;
+  :Chọn "Cập nhật";
+  
+  :Chỉnh sửa thông tin;
+  
+  :Chọn "Lưu";
+  
+elseif () then
+  :Chọn sự kiện;
+  :Chọn "Bật/Tắt trạng thái";
+  
+  :Cập nhật trạng thái;
+  
+else ()
+  :Chọn sự kiện;
+  :Chọn "Xóa";
+  
+  :Xác nhận xóa;
+  
+  :Xóa sự kiện;
+  
+endif
+
+stop
+
+@enduml

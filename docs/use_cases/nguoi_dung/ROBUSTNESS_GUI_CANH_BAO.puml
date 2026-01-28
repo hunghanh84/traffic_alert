@@ -1,0 +1,20 @@
+@startuml Robustness Diagram - Gửi cảnh báo
+title Sơ đồ phân tích Robustness - Gửi cảnh báo
+
+actor "Người dùng" as User
+
+boundary "Trang tạo cảnh báo" as CreateAlertPage
+control "Xử lý cảnh báo" as AlertControl
+entity "Bài đăng" as AlertEntity
+entity "Media" as MediaEntity
+
+User -> CreateAlertPage : Nhập thông tin cảnh báo
+User -> CreateAlertPage : Upload ảnh/video
+CreateAlertPage -> AlertControl : Gửi dữ liệu
+AlertControl -> MediaEntity : Lưu media
+AlertControl -> AlertEntity : Lưu cảnh báo (chờ duyệt)
+AlertEntity -> AlertControl : Lưu thành công
+AlertControl -> CreateAlertPage : Tạo thành công
+CreateAlertPage -> User : Hiển thị "Gửi thành công"
+
+@enduml

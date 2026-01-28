@@ -1,0 +1,38 @@
+@startuml Activity Diagram - Lọc và tìm kiếm cảnh báo
+title Sơ đồ hoạt động - Lọc và tìm kiếm cảnh báo
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Tìm kiếm";
+
+if () then
+  :Chọn "Xóa bộ lọc";
+  
+else ()
+  fork
+    :Nhập từ khóa;
+  fork again
+    :Chọn loại cảnh báo
+    (traffic/flood);
+  fork again
+    :Chọn mức độ
+    (low/medium/high/critical);
+  fork again
+    :Chọn vị trí
+    (phường/xã, đường);
+  fork again
+    :Chọn thời gian
+    (hôm nay, tuần này, tháng này);
+  end fork
+  
+  :Chọn "Tìm kiếm";
+  
+  :Hiển thị danh sách kết quả;
+  
+endif
+
+stop
+
+@enduml

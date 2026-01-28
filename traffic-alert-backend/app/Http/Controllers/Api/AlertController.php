@@ -23,18 +23,22 @@ use Carbon\Carbon;
 
 class AlertController extends Controller
 {
-    /**
-     * Get all alerts with pagination
-     */
+    
     public function index(Request $request)
     {
+        
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Please login to view your alerts.'
+            ], 401);
+        }
+
         $perPage = $request->get('per_page', 10);
         $query = BaiDang::with(['khuVuc.phuongXa.thanhPho', 'duong', 'media', 'nguoiDung', 'phuongXa.thanhPho', 'mucDoSuKien']);
 
-        // Filter for current user's alerts if requested
-        if ($request->has('mine') && Auth::guard('sanctum')->check()) {
-            $query->where('nguoi_dung_id', Auth::guard('sanctum')->id());
-        }
+       
+        $query->where('nguoi_dung_id', Auth::guard('sanctum')->id());
 
         $alerts = $query->orderBy('created_at', 'desc')
             ->paginate($perPage);
@@ -84,13 +88,67 @@ class AlertController extends Controller
         ]);
     }
 
-    /**
-     * Get approved alerts for map visualization
-     * Only returns alerts created within the last 5 minutes (auto-expire after 5 minutes)
-     */
+   
+    public function publicIndex(Request $request)
+    {
+        $perPage = $request->get('per_page', 10);
+        $query = BaiDang::with(['khuVuc.phuongXa.thanhPho', 'duong', 'media', 'nguoiDung', 'phuongXa.thanhPho', 'mucDoSuKien']);
+
+        // Only show approved alerts
+        $query->where('trang_thai', 'da_duyet');
+
+        $alerts = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => $alerts->map(function ($alert) {
+                $duongTen = $alert->duong->ten ?? '';
+                $phuongTen = $alert->phuongXa->ten ?? ($alert->khuVuc->phuongXa->ten ?? '');
+                $thanhPhoTen = $alert->phuongXa?->thanhPho?->ten ?? ($alert->khuVuc?->phuongXa?->thanhPho?->ten ?? 'Đà Nẵng');
+                
+                return [
+                    'id' => $alert->id,
+                    'loai_canh_bao' => $alert->loai_canh_bao,
+                    'muc_do' => $alert->mucDoSuKien ? $alert->mucDoSuKien->ma : null,
+                    'muc_do_ten' => $alert->mucDoSuKien ? $alert->mucDoSuKien->ten : null,
+                    'mo_ta' => $alert->mo_ta,
+                    'trang_thai' => $alert->trang_thai,
+                    'duong' => $duongTen,
+                    'phuong' => $phuongTen,
+                    'thanh_pho' => $thanhPhoTen,
+                    'dia_chi' => "Đường {$duongTen}, Phường {$phuongTen}, {$thanhPhoTen}",
+                    'nguoi_dung' => $alert->nguoiDung ? [
+                        'id' => $alert->nguoiDung->id,
+                        'ten' => $alert->nguoiDung->ten,
+                        'ho_ten' => $alert->nguoiDung->ho_ten,
+                        'anh_dai_dien' => $alert->nguoiDung->anh_dai_dien,
+                    ] : null,
+                    'media' => $alert->media->map(function ($m) {
+                        return [
+                            'id' => $m->id,
+                            'loai' => $m->loai_media,
+                            'url' => $m->url,
+                            'dinh_dang' => $m->dinh_dang,
+                        ];
+                    }),
+                    'created_at' => $alert->created_at->format('d-m-Y H:i:s'),
+                    'updated_at' => $alert->updated_at->format('d-m-Y H:i:s'),
+                ];
+            }),
+            'pagination' => [
+                'total' => $alerts->total(),
+                'per_page' => $alerts->perPage(),
+                'current_page' => $alerts->currentPage(),
+                'last_page' => $alerts->lastPage(),
+            ]
+        ]);
+    }
+
+    
     public function getApprovedAlertsForMap(Request $request)
     {
-        // Get active alerts from thiet_lap_canh_bao table
+       
         $activeAlerts = ThietLapCanhBao::with(['baiDang.media', 'baiDang.mucDoSuKien', 'duong.phuongXa.thanhPho'])
             ->where('trang_thai', 'active')
             ->where('kich_hoat', true)
@@ -140,9 +198,7 @@ class AlertController extends Controller
         ]);
     }
 
-    /**
-     * Store a new alert
-     */
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -156,11 +212,11 @@ class AlertController extends Controller
 
         DB::beginTransaction();
         try {
-            // Find muc_do_id from slug
+            
             $mucDo = MucDoSuKien::where('ma', $request->muc_do)->first();
             
-            // Create bai_dang (default: cho_duyet)
-            // khu_vuc_id and phuong_xa_id will be determined automatically through duong relationship
+            
+          
             $baiDang = BaiDang::create([
                 'nguoi_dung_id' => auth()->id() ?? null,
                 'duong_id' => $request->duong_id,
@@ -171,7 +227,7 @@ class AlertController extends Controller
 
             $uploadedImagePath = null;
             
-            // Upload and save media
+            
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('alerts', 'public');
@@ -231,33 +287,138 @@ class AlertController extends Controller
                             'auto_approved' => false,
                         ];
                         
-                        // SIMPLE AUTO-APPROVAL LOGIC:
-                        // Confidence > 80% AND AI prediction matches user input → Auto-approve
+                        
+                        // ============================================
+                        // 2-LAYER VERIFICATION (MobileNet + YOLO)
+                        // ============================================
+                        
+                        // OLD SIMPLE LOGIC (COMMENTED - KEEP FOR REFERENCE):
+                        /*
                         if ($aiConfidence > 0.8 && $aiPrediction === $request->loai_canh_bao) {
                             $baiDang->trang_thai = 'da_duyet';
                             $baiDang->save();
                             $aiDetectionResult['auto_approved'] = true;
                             
-                            // Create Active Alert in thiet_lap_canh_bao
-                            $activeAlert = ThietLapCanhBao::create([
-                                'bai_dang_id' => $baiDang->id,
-                                'duong_id' => $baiDang->duong_id,
-                                'loai_canh_bao' => $baiDang->loai_canh_bao,
-                                'muc_do_toi_thieu_id' => $baiDang->muc_do_id,
-                                'thoi_gian_bat_dau' => now(),
-                                'thoi_gian_ket_thuc' => now()->addMinutes(30),
-                                'kich_hoat' => true,
-                                'trang_thai' => 'active',
-                            ]);
-
-                            // Dispatch job to expire alert after 30 mins
+                            $activeAlert = ThietLapCanhBao::create([...]);
                             UpdateAlertStatusJob::dispatch($activeAlert->id)->delay(now()->addMinutes(30));
                             
-                            Log::info("✅ Auto-approved alert #{$baiDang->id} and created Active Alert #{$activeAlert->id}", [
-                                'ai_prediction' => $aiPrediction,
-                                'ai_confidence' => $aiConfidence,
-                                'user_type' => $request->loai_canh_bao
-                            ]);
+                            Log::info("✅ Auto-approved alert...");
+                        }
+                        */
+                        
+                        // NEW 2-LAYER LOGIC:
+                        // Layer 1: MobileNet (ảnh user gửi)
+                        // Layer 2: YOLO (camera thực tế)
+                        // Chỉ auto-approve nếu CẢ 2 đều khớp với user input
+                        
+                        if ($aiConfidence > 0.8 && $aiPrediction === $request->loai_canh_bao) {
+                            
+                            $yoloVerified = false;
+                            $yoloResult = null;
+                            
+                            // Try YOLO verification
+                            try {
+                                $yoloService = app(\App\Services\YoloVerificationService::class);
+                                $camera = $yoloService->findNearestCamera($baiDang->duong_id);
+                                
+                                if ($camera) {
+                                    Log::info("🎥 Found camera for YOLO verification", [
+                                        'camera_id' => $camera->id,
+                                        'camera_name' => $camera->ten_camera,
+                                        'duong_id' => $baiDang->duong_id
+                                    ]);
+                                    
+                                    // Verify với YOLO (60 giây - 1 phút)
+                                    $yoloResult = $yoloService->verify(
+                                        $camera->id,
+                                        $request->loai_canh_bao,
+                                        60
+                                    );
+                                    
+                                    if ($yoloResult && isset($yoloResult['match']) && $yoloResult['match']) {
+                                        $yoloVerified = true;
+                                        Log::info("✅ YOLO verification PASSED", [
+                                            'detected' => $yoloResult['detected_label'],
+                                            'confidence' => $yoloResult['confidence'],
+                                            'expected' => $request->loai_canh_bao
+                                        ]);
+                                    } else {
+                                        Log::warning("❌ YOLO verification FAILED - Mismatch", [
+                                            'expected' => $request->loai_canh_bao,
+                                            'detected' => $yoloResult['detected_label'] ?? 'none',
+                                            'yolo_confidence' => $yoloResult['confidence'] ?? 0
+                                        ]);
+                                    }
+                                } else {
+                                    Log::warning("⚠️ No active camera found for verification", [
+                                        'duong_id' => $baiDang->duong_id
+                                    ]);
+                                }
+                            } catch (\Exception $e) {
+                                Log::error("YOLO verification error: " . $e->getMessage());
+                            }
+                            
+                            // Only auto-approve if BOTH MobileNet AND YOLO agree
+                            if ($yoloVerified) {
+                                // ✅ CẢ 2 MODEL KHỚP → AUTO-APPROVE
+                                $baiDang->trang_thai = 'da_duyet';
+                                $baiDang->save();
+                                $aiDetectionResult['auto_approved'] = true;
+                                $aiDetectionResult['yolo_verified'] = true;
+                                $aiDetectionResult['yolo_result'] = $yoloResult;
+                                
+                                // Create Active Alert
+                                $activeAlert = ThietLapCanhBao::create([
+                                    'bai_dang_id' => $baiDang->id,
+                                    'duong_id' => $baiDang->duong_id,
+                                    'loai_canh_bao' => $baiDang->loai_canh_bao,
+                                    'muc_do_toi_thieu_id' => $baiDang->muc_do_id,
+                                    'thoi_gian_bat_dau' => now(),
+                                    'thoi_gian_ket_thuc' => now()->addMinutes(30),
+                                    'kich_hoat' => true,
+                                    'trang_thai' => 'active',
+                                ]);
+
+                                UpdateAlertStatusJob::dispatch($activeAlert->id)->delay(now()->addMinutes(30));
+                                
+                                Log::info("✅ 2-LAYER VERIFIED - Auto-approved alert #{$baiDang->id}", [
+                                    'mobilenet' => [
+                                        'prediction' => $aiPrediction, 
+                                        'confidence' => $aiConfidence
+                                    ],
+                                    'yolo' => [
+                                        'prediction' => $yoloResult['detected_label'], 
+                                        'confidence' => $yoloResult['confidence']
+                                    ],
+                                    'user_input' => $request->loai_canh_bao
+                                ]);
+                                
+                                // Tạo sự kiện ngay khi auto-approve
+                                $this->checkAndCreateTrafficEvent(
+                                    $baiDang->duong_id, 
+                                    $baiDang->loai_canh_bao,
+                                    true,   // autoApproved = true
+                                    false   // adminApproved = false
+                                );
+                            } else {
+                                // ❌ YOLO KHÔNG KHỚP → CHỜ ADMIN DUYỆT
+                                $aiDetectionResult['auto_approved'] = false;
+                                $aiDetectionResult['yolo_verified'] = false;
+                                $aiDetectionResult['yolo_result'] = $yoloResult;
+                                $aiDetectionResult['reason'] = 'MobileNet passed but YOLO verification failed or no camera available';
+                                
+                                Log::info("⚠️ MobileNet passed but YOLO failed - Requires manual approval", [
+                                    'bai_dang_id' => $baiDang->id,
+                                    'mobilenet' => [
+                                        'prediction' => $aiPrediction,
+                                        'confidence' => $aiConfidence
+                                    ],
+                                    'yolo' => $yoloResult ? [
+                                        'prediction' => $yoloResult['detected_label'],
+                                        'confidence' => $yoloResult['confidence']
+                                    ] : 'No camera or failed'
+                                ]);
+                            }
                         } 
                         // All other cases: Pending for admin review
                         else {
@@ -550,94 +711,115 @@ public function show($id)
         ]);
     }
     /**
-     * Check and create a formal traffic event if 3+ active alert settings exist for the same street/type
+     * Check and create a formal traffic event
+     * 
+     * Tạo sự kiện KHI:
+     * 1. Auto-approve bởi 2-layer AI (autoApproved = true)
+     * 2. Admin duyệt thủ công (adminApproved = true)
      */
-    private function checkAndCreateTrafficEvent($duongId, $type)
+    public function checkAndCreateTrafficEvent($duongId, $type, $autoApproved = false, $adminApproved = false)
     {
         $loaiMa = ($type === 'traffic') ? 'traffic_jam' : $type;
         $now = Carbon::now();
 
-        // 1. Count active alert settings for this street and type
-        // We look for alerts that are 'active', 'kich_hoat' = true, and haven't expired
-        $activeAlertsCount = ThietLapCanhBao::whereHas('baiDang', function($q) use ($duongId, $type) {
-                $q->where('duong_id', $duongId)
-                  ->where('loai_canh_bao', $type);
-            })
-            ->where('trang_thai', 'active')
-            ->where('kich_hoat', true)
-            ->where('thoi_gian_ket_thuc', '>', $now)
-            ->count();
+        // Chỉ tạo sự kiện nếu được approve (auto hoặc admin)
+        if (!$autoApproved && !$adminApproved) {
+            Log::info("Skipping event creation - Not approved yet");
+            return;
+        }
+        
+        $source = $autoApproved ? '2-layer AI verification' : 'Admin approval';
+        Log::info("Creating event - Source: {$source}", [
+            'duong_id' => $duongId,
+            'type' => $type
+        ]);
 
-        Log::info("Checking consensus for street #{$duongId} type {$type}. Active alerts: {$activeAlertsCount}");
+        // Check if an active event already exists
+        $loaiSuKien = LoaiSuKien::where('ma', $loaiMa)->first();
+        $trangThaiDangXayRa = TrangThaiSuKien::where('ma', 'occuring')->first();
 
-        if ($activeAlertsCount >= 3) {
-            // 2. Check if an active event already exists
-            $loaiSuKien = LoaiSuKien::where('ma', $loaiMa)->first();
-            $trangThaiDangXayRa = TrangThaiSuKien::where('ma', 'occuring')->first();
+        if ($loaiSuKien && $trangThaiDangXayRa) {
+            // TEMPORARY: Tắt kiểm tra sự kiện tồn tại để test
+            /*
+            // Kiểm tra sự kiện đang hoạt động (chưa hết hạn)
+            $existingEvent = SuKienGiaoThong::where('duong_id', $duongId)
+                ->where('loai_su_kien_id', $loaiSuKien->id)
+                ->where('trang_thai_id', $trangThaiDangXayRa->id)
+                ->where(function($query) use ($now) {
+                    $query->whereNull('ket_thuc_luc')
+                          ->orWhere('ket_thuc_luc', '>', $now);
+                })
+                ->first();
+            */
+            $existingEvent = null; 
 
-            if ($loaiSuKien && $trangThaiDangXayRa) {
-                $existingEvent = SuKienGiaoThong::where('duong_id', $duongId)
-                    ->where('loai_su_kien_id', $loaiSuKien->id)
-                    ->where('trang_thai_id', $trangThaiDangXayRa->id)
-                    ->first();
-
-                if (!$existingEvent) {
-                    $duong = Duong::find($duongId);
-                    
-                    // 3. Create new official traffic event
-                    $suKien = SuKienGiaoThong::create([
-                        'duong_id' => $duongId,
-                        'khu_vuc_id' => $duong ? $duong->khu_vuc_id : null,
-                        'loai_su_kien_id' => $loaiSuKien->id,
-                        'trang_thai_id' => $trangThaiDangXayRa->id,
-                        'nguon' => 'he_thong',
-                        'bat_dau_luc' => $now,
-                        'mo_ta' => "Sự kiện được xác nhận tự động bởi hệ thống dựa trên sự đồng thuận của 3+ báo cáo từ cộng đồng.",
-                    ]);
-                    
-                    Log::info("Official Traffic Event created for street #{$duongId} type {$loaiMa}");
-                    
-                    // 4. Create notification record
-                    $duongTen = $duong ? $duong->ten : "Đường #{$duongId}";
-                    $phuongTen = $duong && $duong->phuongXa ? $duong->phuongXa->ten : '';
-                    
-                    $tieuDe = "🚨 Cảnh báo: {$loaiSuKien->ten} - Đường {$duongTen}";
-                    $noiDung = "Sự kiện {$loaiSuKien->ten} đang xảy ra tại Đường {$duongTen}";
-                    if ($phuongTen) {
-                        $noiDung .= ", Phường {$phuongTen}";
-                    }
-                    $noiDung .= ". Thông tin được xác nhận bởi hệ thống dựa trên báo cáo từ cộng đồng.";
-                    
-                    $thongBao = \App\Models\ThongBao::create([
-                        'su_kien_id' => $suKien->id,
-                        'tieu_de' => $tieuDe,
-                        'noi_dung' => $noiDung,
-                        'muc_do_uu_tien' => 'high',
-                        'trang_thai_gui' => 'pending',
-                        'loai_thong_bao' => 'traffic_event',
-                        'tao_boi' => 'he_thong',
-                    ]);
-                    
-                    Log::info("Notification record created #{$thongBao->id} for event #{$suKien->id}");
-                    
-                    // 5. Send Telegram notification
-                    try {
-                        $telegramService = new TelegramService();
-                        $sendResult = $telegramService->sendNotificationFromThongBao($thongBao->id);
-                        
-                        if ($sendResult) {
-                            $thongBao->update(['trang_thai_gui' => 'sent']);
-                            Log::info("Telegram notification sent successfully for ThongBao #{$thongBao->id}");
-                        } else {
-                            $thongBao->update(['trang_thai_gui' => 'failed']);
-                            Log::warning("Failed to send Telegram notification for ThongBao #{$thongBao->id}");
-                        }
-                    } catch (\Exception $e) {
-                        $thongBao->update(['trang_thai_gui' => 'failed']);
-                        Log::error("Telegram notification error: " . $e->getMessage());
-                    }
+            if (!$existingEvent) {
+                $duong = Duong::find($duongId);
+                
+                
+                $suKien = SuKienGiaoThong::create([
+                    'duong_id' => $duongId,
+                    'khu_vuc_id' => $duong ? $duong->khu_vuc_id : null,
+                    'loai_su_kien_id' => $loaiSuKien->id,
+                    'trang_thai_id' => $trangThaiDangXayRa->id,
+                    'nguon' => $autoApproved ? 'he_thong' : 'admin',
+                    'bat_dau_luc' => $now,
+                    'ket_thuc_luc' => $now->copy()->addMinutes(30), // Sự kiện tồn tại 30 phút
+                    'mo_ta' => $autoApproved 
+                        ? "Sự kiện được xác nhận tự động bởi hệ thống AI 2 lớp (MobileNet + YOLO)."
+                        : "Sự kiện được xác nhận bởi quản trị viên.",
+                ]);
+                
+                Log::info("✅ Official Traffic Event created #{$suKien->id}", [
+                    'source' => $source,
+                    'duong_id' => $duongId,
+                    'type' => $loaiMa
+                ]);
+                
+                // Create notification record
+                $duongTen = $duong ? $duong->ten : "Đường #{$duongId}";
+                $phuongTen = $duong && $duong->phuongXa ? $duong->phuongXa->ten : '';
+                
+                $tieuDe = "🚨 Cảnh báo: {$loaiSuKien->ten} - Đường {$duongTen}";
+                $noiDung = "Sự kiện {$loaiSuKien->ten} đang xảy ra tại Đường {$duongTen}";
+                if ($phuongTen) {
+                    $noiDung .= ", Phường {$phuongTen}";
                 }
+                $noiDung .= ". Thông tin được xác nhận bởi " . ($autoApproved ? "hệ thống AI" : "quản trị viên");
+                $noiDung .= " vào lúc " . $now->format('H:i d/m/Y') . ".";
+                
+                $thongBao = \App\Models\ThongBao::create([
+                    'su_kien_id' => $suKien->id,
+                    'tieu_de' => $tieuDe,
+                    'noi_dung' => $noiDung,
+                    'muc_do_uu_tien' => 'high',
+                    'trang_thai_gui' => 'pending',
+                    'loai_thong_bao' => 'traffic_event',
+                    'tao_boi' => $autoApproved ? 'he_thong' : 'admin',
+                ]);
+                
+                Log::info("Notification record created #{$thongBao->id} for event #{$suKien->id}");
+                
+                // Send Telegram notification
+                try {
+                    $telegramService = new TelegramService();
+                    $sendResult = $telegramService->sendNotificationFromThongBao($thongBao->id);
+                    
+                    if ($sendResult) {
+                        $thongBao->update(['trang_thai_gui' => 'sent']);
+                        Log::info("Telegram notification sent successfully for ThongBao #{$thongBao->id}");
+                    } else {
+                        $thongBao->update(['trang_thai_gui' => 'failed']);
+                        Log::warning("Failed to send Telegram notification for ThongBao #{$thongBao->id}");
+                    }
+                } catch (\Exception $e) {
+                    $thongBao->update(['trang_thai_gui' => 'failed']);
+                    Log::error("Telegram notification error: " . $e->getMessage());
+                }
+            } else {
+                Log::info("Event already exists for street #{$duongId} type {$loaiMa}");
             }
         }
     }
 }
+

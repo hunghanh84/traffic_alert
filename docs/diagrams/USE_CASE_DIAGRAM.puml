@@ -1,0 +1,99 @@
+@startuml Use Case Diagram - Hệ thống Cảnh báo Giao thông
+title Xây dựng hệ thống cảnh báo giao thông thông minh\ncho thành phố Đà Nẵng
+
+left to right direction
+skinparam packageStyle rectangle
+
+' Actors
+actor "Khách vãng lai" as Guest
+actor "Khách hàng" as Customer
+actor "Admin" as Admin
+
+rectangle "Hệ thống Cảnh báo Giao thông Thông minh" {
+
+  ' Use Cases - Khách vãng lai & Khách hàng
+  usecase "Xem bản đồ cảnh báo" as UC1
+  usecase "Xem danh sách cảnh báo" as UC2
+  usecase "Xem chi tiết cảnh báo" as UC3
+  usecase "Lọc - Tìm kiếm" as UC4
+  usecase "Xem tin tức giao thông" as UC5
+  
+  ' Use Cases - Đăng ký & Đăng nhập
+  usecase "Đăng ký" as UC6
+  usecase "Xác thực email" as UC7
+  usecase "Đăng nhập" as UC8
+  
+  ' Use Cases - Khách hàng
+  usecase "Tạo cảnh báo mới" as UC9
+  usecase "Upload media" as UC10
+  usecase "Chỉnh sửa cảnh báo" as UC11
+  usecase "Xóa cảnh báo của tôi" as UC12
+  usecase "Thiết lập cảnh báo tự động" as UC13
+  usecase "Nhận thông báo" as UC14
+  usecase "Cập nhật thông tin cá nhân" as UC15
+  
+  ' Use Cases - Admin
+  usecase "Xem Dashboard" as UC16
+  usecase "Duyệt cảnh báo" as UC17
+  usecase "Từ chối cảnh báo" as UC18
+  usecase "Xóa cảnh báo" as UC19
+  usecase "Cập nhật trạng thái cảnh báo" as UC20
+  usecase "Quản lý người dùng" as UC21
+  usecase "Tạo người dùng" as UC22
+  usecase "Cập nhật người dùng" as UC23
+  usecase "Xóa người dùng" as UC24
+  usecase "Bật/Tắt trạng thái người dùng" as UC25
+  usecase "Quản lý sự kiện giao thông" as UC26
+  usecase "Tạo sự kiện" as UC27
+  usecase "Cập nhật sự kiện" as UC28
+  usecase "Xóa sự kiện" as UC29
+  usecase "Cập nhật tọa độ đường" as UC30
+  usecase "Thống kê báo cáo" as UC31
+  usecase "Xem hoạt động gần đây" as UC32
+
+}
+
+' Khách vãng lai connections
+Guest --> UC1
+Guest --> UC5
+Guest --> UC6
+
+' Khách hàng connections
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+Customer --> UC5
+Customer --> UC8
+Customer --> UC9
+Customer --> UC11
+Customer --> UC12
+Customer --> UC13
+Customer --> UC14
+Customer --> UC15
+
+' Admin connections
+Admin --> UC8
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+Admin --> UC21
+Admin --> UC22
+Admin --> UC23
+Admin --> UC24
+Admin --> UC25
+Admin --> UC26
+Admin --> UC27
+Admin --> UC28
+Admin --> UC29
+Admin --> UC30
+Admin --> UC31
+Admin --> UC32
+
+' Include relationships
+UC6 ..> UC7 : <<include>>
+UC9 ..> UC10 : <<include>>
+
+@enduml

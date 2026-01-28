@@ -1,0 +1,39 @@
+@startuml Activity Diagram - Gửi cảnh báo
+title Sơ đồ hoạt động - Gửi cảnh báo (Tạo cảnh báo mới)
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Tạo cảnh báo";
+
+if () then
+  :Chọn "Hủy";
+  
+else ()
+  fork
+    :Chọn loại cảnh báo
+    (traffic/flood);
+  fork again
+    :Chọn mức độ
+    (low/medium/high/critical);
+  fork again
+    :Chọn đường;
+  fork again
+    :Nhập mô tả;
+  fork again
+    :Upload ảnh/video
+    (tùy chọn);
+  end fork
+  
+  :Chọn "Gửi cảnh báo";
+  
+  :Lưu với trạng thái "chờ duyệt";
+  
+  :Hiển thị "Gửi cảnh báo thành công";
+  
+endif
+
+stop
+
+@enduml

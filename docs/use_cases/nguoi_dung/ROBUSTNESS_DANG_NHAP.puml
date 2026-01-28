@@ -1,0 +1,17 @@
+@startuml Robustness Diagram - Đăng nhập
+title Sơ đồ phân tích Robustness - Đăng nhập
+
+actor "Người dùng" as User
+
+boundary "Trang đăng nhập" as LoginPage
+control "Xử lý đăng nhập" as LoginControl
+entity "Người dùng" as UserEntity
+
+User -> LoginPage : Nhập email, mật khẩu
+LoginPage -> LoginControl : Gửi thông tin
+LoginControl -> UserEntity : Kiểm tra thông tin
+UserEntity -> LoginControl : Trả về kết quả
+LoginControl -> LoginPage : Kết quả đăng nhập
+LoginPage -> User : Chuyển hướng/Hiển thị lỗi
+
+@enduml

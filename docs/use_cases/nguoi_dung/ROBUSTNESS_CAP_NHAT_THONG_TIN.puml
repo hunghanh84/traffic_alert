@@ -1,0 +1,23 @@
+@startuml Robustness Diagram - Cập nhật thông tin
+title Sơ đồ phân tích Robustness - Cập nhật thông tin cá nhân
+
+actor "Người dùng" as User
+
+boundary "Trang tài khoản" as AccountPage
+control "Xử lý cập nhật" as UpdateControl
+entity "Người dùng" as UserEntity
+
+User -> AccountPage : Chọn "Tài khoản"
+AccountPage -> UpdateControl : Lấy thông tin hiện tại
+UpdateControl -> UserEntity : Lấy dữ liệu
+UserEntity -> UpdateControl : Trả về thông tin
+UpdateControl -> AccountPage : Hiển thị form
+
+User -> AccountPage : Chỉnh sửa thông tin
+AccountPage -> UpdateControl : Gửi thông tin mới
+UpdateControl -> UserEntity : Cập nhật
+UserEntity -> UpdateControl : Kết quả
+UpdateControl -> AccountPage : Thông báo
+AccountPage -> User : Hiển thị kết quả
+
+@enduml

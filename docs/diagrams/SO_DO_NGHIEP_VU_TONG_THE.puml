@@ -1,0 +1,118 @@
+@startuml Sơ đồ nghiệp vụ - Hệ thống cảnh báo giao thông Đà Nẵng
+title Sơ đồ nghiệp vụ tổng thể - Traffic Alert System
+
+|Khách vãng lai|
+start
+:Truy cập hệ thống;
+:Xem bản đồ giao thông;
+:Xem danh sách cảnh báo;
+:Xem chi tiết cảnh báo;
+:Tìm kiếm/Lọc cảnh báo;
+
+if (Muốn đăng ký?) then (Có)
+  |Người dùng|
+  :Đăng ký tài khoản;
+  :Xác thực email;
+else (Không)
+  stop
+endif
+
+|Người dùng|
+:Đăng nhập hệ thống;
+
+fork
+  :Xem bản đồ giao thông;
+fork again
+  :Xem danh sách cảnh báo;
+  :Xem chi tiết cảnh báo;
+fork again
+  :Tìm kiếm/Lọc cảnh báo;
+fork again
+  :Tạo cảnh báo mới;
+  note right
+    Upload hình ảnh/video
+    Chọn vị trí
+    Mô tả sự cố
+  end note
+fork again
+  :Chỉnh sửa cảnh báo;
+fork again
+  :Xóa cảnh báo;
+fork again
+  :Xem lịch sử cảnh báo;
+fork again
+  :Thiết lập nhận thông báo;
+  note right
+    Chọn tuyến đường
+    Chọn mức độ
+    Chọn kênh nhận
+  end note
+end fork
+
+|Hệ thống AI|
+:Phát hiện sự cố qua AI;
+:Phân tích hình ảnh;
+:Tạo cảnh báo tự động;
+
+|Quản trị viên|
+:Đăng nhập hệ thống;
+:Xem Dashboard;
+
+fork
+  :Duyệt cảnh báo;
+  if (Hợp lệ?) then (Có)
+    :Phê duyệt;
+  else (Không)
+    :Từ chối cảnh báo;
+    :Gửi lý do;
+  endif
+fork again
+  :Quản lý người dùng;
+  note right
+    Tạo/Sửa/Xóa
+    Phân quyền
+    Kích hoạt/Vô hiệu hóa
+  end note
+fork again
+  :Quản lý sự kiện giao thông;
+  note right
+    Tạo sự kiện
+    Cập nhật trạng thái
+    Xóa sự kiện
+  end note
+fork again
+  :Quản lý tuyến đường;
+  note right
+    Cập nhật tọa độ
+    Upload GeoJSON
+    Quản lý khu vực
+  end note
+fork again
+  :Quản lý kết quả AI;
+  note right
+    Xem kết quả
+    Xác minh
+    Xóa kết quả sai
+  end note
+fork again
+  :Thống kê báo cáo;
+  note right
+    Theo thời gian
+    Theo vị trí
+    Theo loại sự cố
+    Xuất PDF/Excel
+  end note
+end fork
+
+|Hệ thống|
+:Tự động cập nhật bản đồ;
+:Gửi thông báo;
+note right
+  Email
+  Telegram
+  Push notification
+end note
+
+stop
+
+@enduml

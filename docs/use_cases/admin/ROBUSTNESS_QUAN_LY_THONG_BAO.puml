@@ -1,0 +1,25 @@
+@startuml Robustness Diagram - Quản lý thông báo
+title Sơ đồ phân tích Robustness - Quản lý thông báo
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý thông báo" as NotificationPage
+control "Xử lý thông báo" as NotificationControl
+entity "Thông báo" as NotificationEntity
+control "Gửi Email/Telegram" as SendControl
+
+Admin -> NotificationPage : Chọn "Quản lý thông báo"
+Admin -> NotificationPage : Chọn "Tạo thông báo mới"
+NotificationPage -> Admin : Hiển thị form
+
+Admin -> NotificationPage : Nhập tiêu đề, nội dung
+Admin -> NotificationPage : Chọn đối tượng nhận, kênh gửi
+NotificationPage -> NotificationControl : Gửi dữ liệu
+NotificationControl -> NotificationEntity : Lưu thông báo
+NotificationControl -> SendControl : Gửi qua kênh đã chọn
+SendControl -> Admin : Gửi thông báo
+NotificationEntity -> NotificationControl : Lưu thành công
+NotificationControl -> NotificationPage : Gửi thành công
+NotificationPage -> Admin : Hiển thị "Gửi thành công"
+
+@enduml

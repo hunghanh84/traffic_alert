@@ -1,0 +1,17 @@
+@startuml Robustness Diagram - Thiết lập cảnh báo tự động
+title Sơ đồ phân tích Robustness - Thiết lập cảnh báo tự động
+
+actor "Người dùng" as User
+
+boundary "Trang thiết lập" as SettingPage
+control "Xử lý thiết lập" as SettingControl
+entity "Thiết lập cảnh báo" as SettingEntity
+
+User -> SettingPage : Chọn đường, mức độ, thời gian, kênh nhận
+SettingPage -> SettingControl : Gửi cấu hình
+SettingControl -> SettingEntity : Lưu thiết lập
+SettingEntity -> SettingControl : Lưu thành công
+SettingControl -> SettingPage : Thiết lập thành công
+SettingPage -> User : Hiển thị "Thiết lập thành công"
+
+@enduml

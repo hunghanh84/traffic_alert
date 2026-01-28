@@ -1,0 +1,53 @@
+@startuml Activity Diagram - Admin - Quản lý kết quả AI
+title Sơ đồ hoạt động - Admin - Quản lý kết quả AI
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý kết quả AI";
+
+:Hiển thị danh sách kết quả AI;
+
+if () then
+  :Chọn "Lọc theo độ tin cậy";
+  
+elseif () then
+  :Chọn "Lọc theo nhãn phát hiện";
+  
+else ()
+  :Chọn một kết quả AI;
+  
+  :Xem chi tiết kết quả;
+  
+  fork
+    :Xem raw JSON;
+  fork again
+    :Xem media gốc;
+  fork again
+    :Xem độ tin cậy;
+  end fork
+  
+  if () then
+    :Chọn "Xác minh";
+    
+    :Đánh dấu "đã xác minh";
+    
+    :Hiển thị "Xác minh thành công";
+    
+  else ()
+    :Chọn "Xóa kết quả sai";
+    
+    :Xác nhận xóa;
+    
+    :Xóa kết quả AI;
+    
+    :Hiển thị "Xóa thành công";
+    
+  endif
+  
+endif
+
+stop
+
+@enduml

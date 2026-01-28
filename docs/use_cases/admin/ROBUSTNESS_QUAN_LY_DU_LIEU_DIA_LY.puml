@@ -1,0 +1,24 @@
+@startuml Robustness Diagram - Quản lý dữ liệu địa lý
+title Sơ đồ phân tích Robustness - Quản lý dữ liệu địa lý
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý địa lý" as GeoManagePage
+control "Xử lý CRUD địa lý" as GeoControl
+entity "Dữ liệu địa lý" as GeoEntity
+
+Admin -> GeoManagePage : Chọn "Quản lý dữ liệu địa lý"
+Admin -> GeoManagePage : Chọn loại dữ liệu\n(Phường/Khu vực/Đường/Mức độ)
+GeoManagePage -> GeoControl : Lấy danh sách
+GeoControl -> GeoEntity : Lấy dữ liệu
+GeoEntity -> GeoControl : Trả về dữ liệu
+GeoControl -> GeoManagePage : Hiển thị danh sách
+
+Admin -> GeoManagePage : Thực hiện CRUD/Upload GeoJSON
+GeoManagePage -> GeoControl : Gửi hành động
+GeoControl -> GeoEntity : Cập nhật dữ liệu
+GeoEntity -> GeoControl : Kết quả
+GeoControl -> GeoManagePage : Thông báo
+GeoManagePage -> Admin : Hiển thị kết quả
+
+@enduml

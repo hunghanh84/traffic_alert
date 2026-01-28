@@ -1,0 +1,86 @@
+@startuml USE_CASE_DIAGRAM_FINAL
+skinparam backgroundColor #E8F4F8
+skinparam rectangle {
+    BackgroundColor #E8F4F8
+    BorderColor Black
+}
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    FontName Arial
+    FontSize 12
+}
+skinparam actor {
+    BorderColor Black
+    FontName Arial
+    FontSize 12
+}
+
+title Sơ đồ Use Case - Hệ thống Cảnh báo Giao thông Đà Nẵng
+
+left to right direction
+
+' Actors - Left side
+actor "Người dùng" as User
+actor "Khách vãng lai" as Guest
+
+' Actor - Right side  
+actor "Quản trị viên" as Admin
+
+' Inheritance
+User --|> Guest
+Admin --|> User
+
+rectangle "Hệ thống Cảnh báo Giao thông Đà Nẵng" {
+    
+    ' Use cases cho Khách vãng lai
+    usecase "Xem bản đồ\ncảnh báo" as UC1
+    usecase "Đăng ký" as UC2
+    
+    ' Use cases cho Người dùng
+    usecase "Đăng ký\ntài khoản" as UC3
+    usecase "Đăng nhập" as UC4
+    usecase "Cập nhật thông tin\ncá nhân" as UC5
+    usecase "Lọc và tìm kiếm\ncảnh báo" as UC6
+    usecase "Xem thông tin\ncảnh báo" as UC7
+    usecase "Gửi cảnh báo" as UC8
+    usecase "Cập nhật\ncảnh báo" as UC9
+    
+    ' Use cases cho Admin
+    usecase "Xem Dashboard" as UC10
+    usecase "Quản lý\nngười dùng" as UC11
+    usecase "Quản lý sự kiện\ngiao thông" as UC12
+    usecase "Thống kê\nbáo cáo" as UC13
+    usecase "Quản lý dữ liệu\nđịa lý" as UC14
+    usecase "Quản lý\nkết quả AI" as UC15
+    usecase "Quản lý\nthông báo" as UC16
+    usecase "Quản lý\ncảnh báo" as UC17
+}
+
+' Connections - Khách vãng lai
+Guest --> UC1
+Guest --> UC2
+
+' Connections - Người dùng (KHÔNG nối với UC1 và UC2)
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+
+' Connections - Admin
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+
+' Include relationship
+UC2 .> UC4 : <<include>>
+
+@enduml

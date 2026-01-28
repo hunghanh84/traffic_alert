@@ -1,0 +1,28 @@
+@startuml Sequence Diagram - Thiết lập cảnh báo tự động
+title sd_ThietLapCanhBaoTuDong
+
+actor "Người dùng" as a
+participant "V_ThietLap" as b
+participant "C_SettingController" as c
+participant "M_ThietLap" as d
+
+a -> b : 1: load()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: chonCauHinh()
+a -> b : 4: clickKichHoat()
+activate b
+b -> c : 5: store(data)
+activate c
+c -> d : 6: insert(trangThai='active')
+activate d
+d --> c : 7: thietLapMoi
+deactivate d
+c --> b : 8: thanhCong
+deactivate c
+b --> a : 9: hienThiThongBao()
+deactivate b
+
+@enduml

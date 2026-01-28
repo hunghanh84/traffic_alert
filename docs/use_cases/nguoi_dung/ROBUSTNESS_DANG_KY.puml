@@ -1,0 +1,21 @@
+@startuml Robustness Diagram - Đăng ký
+title Sơ đồ phân tích Robustness - Đăng ký tài khoản
+
+actor "Khách vãng lai" as Guest
+
+boundary "Trang đăng ký" as RegisterPage
+control "Xử lý đăng ký" as RegisterControl
+entity "Người dùng" as UserEntity
+control "Gửi email" as EmailControl
+
+Guest -> RegisterPage : Nhập thông tin đăng ký
+RegisterPage -> RegisterControl : Gửi thông tin
+RegisterControl -> UserEntity : Kiểm tra email trùng
+UserEntity -> RegisterControl : Kết quả kiểm tra
+RegisterControl -> UserEntity : Tạo tài khoản mới
+RegisterControl -> EmailControl : Gửi mã OTP
+EmailControl -> Guest : Email chứa mã OTP
+RegisterControl -> RegisterPage : Đăng ký thành công
+RegisterPage -> Guest : Chuyển đến trang xác thực
+
+@enduml

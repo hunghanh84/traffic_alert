@@ -1,0 +1,26 @@
+@startuml Robustness Diagram - Quản lý cảnh báo
+title Sơ đồ phân tích Robustness - Quản lý cảnh báo
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý cảnh báo" as AlertManagePage
+control "Xử lý duyệt cảnh báo" as ApprovalControl
+entity "Bài đăng" as AlertEntity
+control "Gửi thông báo" as NotificationControl
+
+Admin -> AlertManagePage : Chọn "Quản lý cảnh báo"
+AlertManagePage -> ApprovalControl : Lấy danh sách chờ duyệt
+ApprovalControl -> AlertEntity : Lấy cảnh báo chờ duyệt
+AlertEntity -> ApprovalControl : Trả về danh sách
+ApprovalControl -> AlertManagePage : Hiển thị danh sách
+
+Admin -> AlertManagePage : Chọn cảnh báo
+Admin -> AlertManagePage : Chọn hành động (Duyệt/Từ chối/Xóa)
+AlertManagePage -> ApprovalControl : Gửi hành động
+ApprovalControl -> AlertEntity : Cập nhật trạng thái
+ApprovalControl -> NotificationControl : Gửi thông báo cho người tạo
+AlertEntity -> ApprovalControl : Cập nhật thành công
+ApprovalControl -> AlertManagePage : Thông báo kết quả
+AlertManagePage -> Admin : Hiển thị "Thành công"
+
+@enduml

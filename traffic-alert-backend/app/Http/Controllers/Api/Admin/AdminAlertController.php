@@ -10,9 +10,7 @@ use Carbon\Carbon;
 
 class AdminAlertController extends Controller
 {
-    /**
-     * Get all alerts with filters
-     */
+    
     public function index(Request $request)
     {
         $query = BaiDang::with(['nguoiDung', 'duong.phuongXa', 'mucDoSuKien', 'media']);
@@ -80,9 +78,6 @@ class AdminAlertController extends Controller
         ]);
     }
 
-    /**
-     * Approve an alert
-     */
     public function approve(Request $request, $id)
     {
         try {
@@ -101,12 +96,27 @@ class AdminAlertController extends Controller
             $duration = $request->get('duration', 60); // Default 60 minutes
             ThietLapCanhBao::create([
                 'bai_dang_id' => $alert->id,
+                'duong_id' => $alert->duong_id,
                 'loai_canh_bao' => $alert->loai_canh_bao,
+                'muc_do_toi_thieu_id' => $alert->muc_do_id,
                 'kich_hoat' => true,
                 'trang_thai' => 'active',
                 'thoi_gian_bat_dau' => Carbon::now(),
                 'thoi_gian_ket_thuc' => Carbon::now()->addMinutes($duration),
             ]);
+            
+            // Tạo sự kiện giao thông khi admin duyệt
+            try {
+                $alertController = app(\App\Http\Controllers\Api\AlertController::class);
+                $alertController->checkAndCreateTrafficEvent(
+                    $alert->duong_id,
+                    $alert->loai_canh_bao,
+                    false,  // autoApproved = false
+                    true    // adminApproved = true
+                );
+            } catch (\Exception $e) {
+                \Log::error("Error creating event after admin approval: " . $e->getMessage());
+            }
 
             return response()->json([
                 'success' => true,

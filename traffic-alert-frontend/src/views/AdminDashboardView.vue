@@ -201,7 +201,7 @@ onMounted(async () => {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  margin-left: 280px; /* Account for sidebar width (260px + 20px padding) */
+  margin-left: 0; /* Account for sidebar width (260px + 20px padding) */
   min-height: 100vh;
 }
 

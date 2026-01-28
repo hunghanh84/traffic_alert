@@ -1,0 +1,56 @@
+@startuml Activity Diagram - Cập nhật cảnh báo
+title Sơ đồ hoạt động - Cập nhật cảnh báo
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Cảnh báo của tôi";
+
+:Hiển thị danh sách cảnh báo đã tạo;
+
+:Chọn cảnh báo muốn sửa;
+
+if (Trạng thái cảnh báo?) then (Đã duyệt)
+  :Hiển thị lỗi
+  "Không thể sửa cảnh báo đã được duyệt";
+  stop
+  
+elseif (Đã từ chối) then
+  :Hiển thị lỗi
+  "Không thể sửa cảnh báo đã bị từ chối";
+  stop
+  
+else (Chờ duyệt)
+endif
+
+if () then
+  :Chọn "Hủy";
+  
+else ()
+  fork
+    :Chỉnh sửa loại cảnh báo
+    (traffic/flood);
+  fork again
+    :Chỉnh sửa mức độ
+    (low/medium/high/critical);
+  fork again
+    :Chỉnh sửa đường;
+  fork again
+    :Chỉnh sửa mô tả;
+  fork again
+    :Thay đổi ảnh/video
+    (tùy chọn);
+  end fork
+  
+  :Chọn "Cập nhật";
+  
+  :Lưu thay đổi vào database;
+  
+  :Hiển thị "Cập nhật cảnh báo thành công";
+  
+endif
+
+stop
+
+@enduml

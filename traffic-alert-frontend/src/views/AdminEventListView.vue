@@ -284,7 +284,7 @@ onMounted(() => {
 <style scoped>
 .admin-events {
   padding: 2rem;
-  margin-left: 280px;
+  margin-left: 0;
   min-height: 100vh;
 }
 

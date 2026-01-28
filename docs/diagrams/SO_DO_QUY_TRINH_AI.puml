@@ -1,0 +1,60 @@
+@startuml Sơ đồ nghiệp vụ - Quy trình AI phát hiện sự cố
+title Quy trình AI phát hiện sự cố tự động
+
+|Hệ thống AI|
+start
+:Nhận hình ảnh từ camera/người dùng;
+
+:Tiền xử lý hình ảnh:
+- Resize
+- Normalize
+- Augmentation;
+
+:Chạy mô hình AI;
+note right
+  YOLOv8/Faster R-CNN
+  Phát hiện:
+  - Tai nạn
+  - Ùn tắc
+  - Ngập nước
+  - Hư hỏng đường
+end note
+
+:Phân tích kết quả;
+
+if (Độ tin cậy > 70%?) then (Có)
+  :Tạo cảnh báo tự động;
+  :Lưu kết quả AI;
+  
+  |Hệ thống|
+  :Đặt trạng thái "Chờ xác minh";
+  :Gửi thông báo cho Admin;
+  
+  |Quản trị viên|
+  :Xem kết quả AI;
+  :Kiểm tra hình ảnh gốc;
+  :Xem raw JSON;
+  
+  if (Xác minh đúng?) then (Có)
+    :Xác nhận kết quả AI;
+    |Hệ thống|
+    :Tạo cảnh báo chính thức;
+    :Hiển thị trên bản đồ;
+    :Gửi thông báo người dùng;
+  else (Không)
+    :Đánh dấu sai;
+    :Xóa kết quả AI;
+    note right
+      Dùng để cải thiện
+      mô hình AI sau này
+    end note
+  endif
+  
+else (Không)
+  :Lưu vào log;
+  :Không tạo cảnh báo;
+endif
+
+stop
+
+@enduml

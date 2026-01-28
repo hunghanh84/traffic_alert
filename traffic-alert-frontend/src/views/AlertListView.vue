@@ -80,9 +80,7 @@ const fetchAlerts = async (page = 1) => {
     const url = new URL('http://127.0.0.1:8000/api/alerts')
     url.searchParams.append('page', page)
     url.searchParams.append('per_page', 10)
-    if (isMineOnly.value) {
-      url.searchParams.append('mine', '1')
-    }
+    // No need for 'mine' parameter - API always returns user's own alerts
 
     const response = await fetch(url.toString(), {
       headers

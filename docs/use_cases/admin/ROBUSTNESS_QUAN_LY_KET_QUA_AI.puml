@@ -1,0 +1,29 @@
+@startuml Robustness Diagram - Quản lý kết quả AI
+title Sơ đồ phân tích Robustness - Quản lý kết quả AI
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý AI" as AIManagePage
+control "Xử lý kết quả AI" as AIControl
+entity "Kết quả AI" as AIEntity
+
+Admin -> AIManagePage : Chọn "Quản lý kết quả AI"
+AIManagePage -> AIControl : Lấy danh sách
+AIControl -> AIEntity : Lấy kết quả AI
+AIEntity -> AIControl : Trả về danh sách
+AIControl -> AIManagePage : Hiển thị danh sách
+
+Admin -> AIManagePage : Chọn kết quả
+AIManagePage -> AIControl : Lấy chi tiết
+AIControl -> AIEntity : Lấy thông tin chi tiết
+AIEntity -> AIControl : Trả về dữ liệu
+AIControl -> AIManagePage : Hiển thị chi tiết
+
+Admin -> AIManagePage : Xác minh/Xóa
+AIManagePage -> AIControl : Gửi hành động
+AIControl -> AIEntity : Cập nhật/Xóa
+AIEntity -> AIControl : Kết quả
+AIControl -> AIManagePage : Thông báo
+AIManagePage -> Admin : Hiển thị kết quả
+
+@enduml

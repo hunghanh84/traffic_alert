@@ -363,7 +363,7 @@ onMounted(() => {
             </label>
             <div class="image-preview-grid">
               <div v-for="img in existingImages" :key="img.id" class="preview-item">
-                <img :src="img.url" :alt="img.dinh_dang" />
+                <img :src="img.duong_dan" :alt="img.ten_file" />
               </div>
             </div>
             <p class="help-text">* Upload ảnh mới sẽ thay thế tất cả ảnh cũ</p>

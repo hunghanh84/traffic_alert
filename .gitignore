@@ -1,0 +1,57 @@
+# Laravel
+/vendor/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# Vue/Vite
+node_modules/
+dist/
+.DS_Store
+
+# AI/ML
+MODEL/
+*.pt
+*.pth
+*.h5
+*.pkl
+ai-detection/videos/
+ai-detection/__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database
+*.sqlite
+*.db
+
+# Uploads
+storage/app/public/alerts/
+public/storage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/

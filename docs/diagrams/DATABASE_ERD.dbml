@@ -1,0 +1,336 @@
+////////////////////////////////////////////////////
+//  HỆ THỐNG CẢNH BÁO GIAO THÔNG ĐÀ NẴNG
+//  Database Schema - DBML Format
+////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////
+//  ĐỊA LÝ & TUYẾN ĐƯỜNG
+////////////////////////////////////////////////////
+
+Table thanh_pho {
+  id          bigint [pk, increment]
+  ten         varchar(255)
+  ma          varchar(50)  [note: 'Mã thành phố']
+  created_at  datetime [note: 'tao_luc']
+  updated_at  datetime [note: 'cap_nhat_luc']
+}
+
+Table phuong_xa {
+  id            bigint [pk, increment]
+  thanh_pho_id  bigint
+  ten           varchar(255)
+  ma            varchar(50)
+  created_at    datetime
+  updated_at    datetime
+}
+
+Table khu_vuc {
+  id          bigint [pk, increment]
+  phuong_id   bigint
+  ten         varchar(255)
+  vi_do       double [note: 'Latitude']
+  kinh_do     double [note: 'Longitude']
+  created_at  datetime
+  updated_at  datetime
+}
+
+Table duong {
+  id          bigint [pk, increment]
+  khu_vuc_id  bigint
+  ten         varchar(255)
+  ma          varchar(50)
+  loai_duong  varchar(50)   [note: 'nội đô / quốc lộ / tỉnh lộ']
+  vi_do       double [note: 'Latitude - added 2026-01-03']
+  kinh_do     double [note: 'Longitude - added 2026-01-03']
+  geometry    json [note: 'GeoJSON geometry']
+  kich_hoat   boolean [default: true]
+  created_at  datetime
+  updated_at  datetime
+}
+
+////////////////////////////////////////////////////
+//  NGƯỜI DÙNG & PHÂN QUYỀN
+////////////////////////////////////////////////////
+
+Table nguoi_dung {
+  id                      bigint [pk, increment]
+  ten_dang_nhap           varchar(100) [unique]
+  mat_khau                varchar(255)
+  so_dien_thoai           varchar(30)
+  email                   varchar(255) [unique]
+  email_verified_at       datetime [note: 'Thời điểm xác thực email']
+  verification_code       varchar(6) [note: 'Mã xác thực 6 số']
+  verification_expires_at datetime [note: 'Hết hạn mã xác thực']
+  khu_vuc_id              bigint
+  vai_tro                 varchar(50) [note: 'admin / nguoi_dung / dieu_hanh']
+  trang_thai              varchar(50) [note: 'hoat_dong / khoa / tam_dung']
+  created_at              datetime
+  updated_at              datetime
+  
+  indexes {
+    ten_dang_nhap
+    email
+    vai_tro
+    trang_thai
+  }
+}
+
+////////////////////////////////////////////////////
+//  THIẾT LẬP CẢNH BÁO
+////////////////////////////////////////////////////
+
+Table muc_do_su_kien {
+  id          bigint [pk, increment]
+  ma          varchar(50)   [note: 'THAP / TB / CAO / NGHIEM_TRONG']
+  ten         varchar(255)
+  mo_ta       text
+  uu_tien     int
+  created_at  datetime
+  updated_at  datetime
+}
+
+Table thiet_lap_canh_bao {
+  id                    bigint [pk, increment]
+  nguoi_dung_id         bigint
+  duong_id              bigint
+  bai_dang_id           bigint [note: 'Reference to alert post']
+  muc_do_toi_thieu_id   bigint
+  thoi_gian_bat_dau     datetime
+  thoi_gian_ket_thuc    datetime
+  thu_trong_tuan        int         [note: '1-7 hoặc bitmask']
+  kenh_nhan             varchar(50) [note: 'push / email / sms']
+  trang_thai            varchar(50) [note: 'active / inactive']
+  kich_hoat             boolean [default: true]
+  created_at            datetime
+  updated_at            datetime
+}
+
+////////////////////////////////////////////////////
+//  BÀI ĐĂNG & MEDIA
+////////////////////////////////////////////////////
+
+Table bai_dang {
+  id               bigint [pk, increment]
+  nguoi_dung_id    bigint
+  khu_vuc_id       bigint
+  duong_id         bigint
+  phuong_xa_id     bigint [note: 'Added 2026-01-03']
+  loai_canh_bao    varchar(50) [note: 'traffic / flood']
+  muc_do_id        bigint [note: 'FK to muc_do_su_kien']
+  trang_thai       varchar(50) [note: 'pending / approved / rejected']
+  mo_ta            text
+  created_at       datetime
+  updated_at       datetime
+  deleted_at       datetime [note: 'Soft delete']
+}
+
+Table media {
+  id               bigint [pk, increment]
+  bai_dang_id      bigint
+  loai_media       varchar(50) [note: 'image / video']
+  duong_dan        varchar(500)
+  kich_thuoc_byte  bigint
+  dinh_dang        varchar(100) [note: 'jpg / png / mp4']
+  thoi_luong       int [note: 'Duration in seconds for video']
+  created_at       datetime
+  updated_at       datetime
+}
+
+////////////////////////////////////////////////////
+//  KẾT QUẢ AI
+////////////////////////////////////////////////////
+
+Table ket_qua_ai {
+  id                  bigint [pk, increment]
+  media_id            bigint
+  nhan                varchar(100) [note: 'AI label/classification']
+  do_tin_cay          double [note: 'Confidence score 0-1']
+  raw_json            json [note: 'Full AI response']
+  da_xac_minh         boolean [default: false]
+  xac_minh_boi        bigint [note: 'FK to nguoi_dung']
+  created_at          datetime
+  updated_at          datetime
+}
+
+////////////////////////////////////////////////////
+//  DANH MỤC SỰ KIỆN
+////////////////////////////////////////////////////
+
+Table loai_su_kien {
+  id          bigint [pk, increment]
+  ma          varchar(50)   [note: 'TAC_DUONG / NGAP / TAI_NAN']
+  ten         varchar(255)
+  mo_ta       text
+  created_at  datetime
+  updated_at  datetime
+}
+
+Table trang_thai_su_kien {
+  id          bigint [pk, increment]
+  ma          varchar(50)   [note: 'DANG_XAY_RA / DA_KET_THUC / HUY / SAI_BAO']
+  ten         varchar(255)
+  mo_ta       text
+  created_at  datetime
+  updated_at  datetime
+}
+
+////////////////////////////////////////////////////
+//  SỰ KIỆN GIAO THÔNG
+////////////////////////////////////////////////////
+
+Table su_kien_giao_thong {
+  id                 bigint [pk, increment]
+  ket_qua_ai_id      bigint
+  duong_id           bigint
+  khu_vuc_id         bigint
+  loai_su_kien_id    bigint
+  muc_do_id          bigint
+  trang_thai_id      bigint
+  nguon              varchar(50) [default: 'user', note: 'camera / user / he_thong']
+  bat_dau_luc        datetime
+  ket_thuc_luc       datetime
+  mo_ta              text
+  created_at         datetime
+  updated_at         datetime
+}
+
+////////////////////////////////////////////////////
+//  CAMERA GIÁM SÁT
+////////////////////////////////////////////////////
+
+Table camera {
+  id                 bigint [pk, increment]
+  ma_camera          varchar(100)
+  ten_camera         varchar(255)
+  duong_id           bigint
+  khu_vuc_id         bigint
+  stream_url         varchar(500)
+  lan_kiem_tra_cuoi  datetime
+  trang_thai_ket_noi varchar(50) [note: 'online / offline / error']
+  so_lan_kiem_tra    int [default: 0]
+  created_at         datetime
+  updated_at         datetime
+}
+
+////////////////////////////////////////////////////
+//  THÔNG BÁO & LỊCH SỬ GỬI
+////////////////////////////////////////////////////
+
+Table thong_bao {
+  id                bigint [pk, increment]
+  su_kien_id        bigint
+  tieu_de           varchar(255)
+  noi_dung          text
+  muc_do_uu_tien    varchar(50) [default: 'normal', note: 'low / normal / high / urgent']
+  trang_thai_gui    varchar(50) [default: 'pending', note: 'pending / sent / failed']
+  loai_thong_bao    varchar(50) [default: 'system', note: 'system / manual']
+  tao_boi           varchar(50) [default: 'he_thong', note: 'he_thong / admin']
+  created_at        datetime
+  updated_at        datetime
+}
+
+Table gui_thong_bao {
+  id               bigint [pk, increment]
+  thong_bao_id     bigint
+  nguoi_dung_id    bigint
+  thoi_gian_gui    datetime
+  kenh_gui         varchar(50) [note: 'push / email / sms']
+  trang_thai       varchar(50) [note: 'sent / failed / pending']
+  loi              text [note: 'Error message if failed']
+  created_at       datetime
+  updated_at       datetime
+}
+
+////////////////////////////////////////////////////
+//  THỐNG KÊ
+////////////////////////////////////////////////////
+
+Table thong_ke_giao_thong {
+  id                         bigint [pk, increment]
+  duong_id                   bigint
+  khu_vuc_id                 bigint
+  loai_thoi_gian             varchar(50) [note: 'ngay / tuan / thang']
+  bat_dau                    datetime
+  ket_thuc                   datetime
+  so_lan_tac_duong           int [default: 0]
+  so_lan_ngap                int [default: 0]
+  muc_do_tac_duong_tb        double [note: 'Average congestion level']
+  muc_do_ngap_tb             double [note: 'Average flood level']
+  tong_quan                  text
+  created_at                 datetime
+  updated_at                 datetime
+}
+
+////////////////////////////////////////////////////
+//  LARAVEL SYSTEM TABLES
+////////////////////////////////////////////////////
+
+Table personal_access_tokens {
+  id              bigint [pk, increment]
+  tokenable_type  varchar(255)
+  tokenable_id    bigint
+  name            varchar(255)
+  token           varchar(64) [unique]
+  abilities       text
+  last_used_at    datetime
+  expires_at      datetime
+  created_at      datetime
+  updated_at      datetime
+  
+  indexes {
+    (tokenable_type, tokenable_id)
+  }
+}
+
+////////////////////////////////////////////////////
+//  QUAN HỆ (RELATIONSHIPS)
+////////////////////////////////////////////////////
+
+// Địa lý
+Ref: phuong_xa.thanh_pho_id > thanh_pho.id
+Ref: khu_vuc.phuong_id > phuong_xa.id
+Ref: duong.khu_vuc_id > khu_vuc.id
+
+// Người dùng
+Ref: nguoi_dung.khu_vuc_id > khu_vuc.id
+
+// Thiết lập cảnh báo
+Ref: thiet_lap_canh_bao.nguoi_dung_id > nguoi_dung.id
+Ref: thiet_lap_canh_bao.duong_id > duong.id
+Ref: thiet_lap_canh_bao.bai_dang_id > bai_dang.id
+Ref: thiet_lap_canh_bao.muc_do_toi_thieu_id > muc_do_su_kien.id
+
+// Bài đăng
+Ref: bai_dang.nguoi_dung_id > nguoi_dung.id
+Ref: bai_dang.khu_vuc_id > khu_vuc.id
+Ref: bai_dang.duong_id > duong.id
+Ref: bai_dang.phuong_xa_id > phuong_xa.id
+Ref: bai_dang.muc_do_id > muc_do_su_kien.id
+
+// Media
+Ref: media.bai_dang_id > bai_dang.id
+
+// Kết quả AI
+Ref: ket_qua_ai.media_id > media.id
+Ref: ket_qua_ai.xac_minh_boi > nguoi_dung.id
+
+// Sự kiện giao thông
+Ref: su_kien_giao_thong.ket_qua_ai_id > ket_qua_ai.id
+Ref: su_kien_giao_thong.duong_id > duong.id
+Ref: su_kien_giao_thong.khu_vuc_id > khu_vuc.id
+Ref: su_kien_giao_thong.loai_su_kien_id > loai_su_kien.id
+Ref: su_kien_giao_thong.muc_do_id > muc_do_su_kien.id
+Ref: su_kien_giao_thong.trang_thai_id > trang_thai_su_kien.id
+
+// Camera
+Ref: camera.duong_id > duong.id
+Ref: camera.khu_vuc_id > khu_vuc.id
+
+// Thông báo
+Ref: thong_bao.su_kien_id > su_kien_giao_thong.id
+Ref: gui_thong_bao.thong_bao_id > thong_bao.id
+Ref: gui_thong_bao.nguoi_dung_id > nguoi_dung.id
+
+// Thống kê
+Ref: thong_ke_giao_thong.duong_id > duong.id
+Ref: thong_ke_giao_thong.khu_vuc_id > khu_vuc.id

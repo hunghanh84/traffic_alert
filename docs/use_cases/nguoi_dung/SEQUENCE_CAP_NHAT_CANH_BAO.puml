@@ -1,0 +1,49 @@
+@startuml Sequence Diagram - Cập nhật cảnh báo
+title sd_CapNhatCanhBao
+
+actor "Người dùng" as a
+participant "V_CanhBaoCuaToi" as b
+participant "C_AlertController" as c
+participant "M_BaiDang" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSach()
+activate c
+c -> d : 3: select(nguoiDungId)
+activate d
+d --> c : 4: danhSach
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: chonCanhBao()
+activate b
+b -> c : 8: layChiTiet(id)
+activate c
+c -> d : 9: select(id)
+activate d
+d --> c : 10: chiTiet
+deactivate d
+c --> b : 11: duLieu
+deactivate c
+b --> a : 12: hienThiForm()
+deactivate b
+
+a -> b : 13: chinhSua()
+a -> b : 14: clickCapNhat()
+activate b
+b -> c : 15: update(id, data)
+activate c
+c -> d : 16: update(data)
+activate d
+d --> c : 17: ketQua
+deactivate d
+c --> b : 18: thanhCong
+deactivate c
+b --> a : 19: hienThiThongBao()
+deactivate b
+
+@enduml

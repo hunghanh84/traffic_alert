@@ -1,0 +1,23 @@
+@startuml Robustness Diagram - Quản lý người dùng
+title Sơ đồ phân tích Robustness - Quản lý người dùng
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý người dùng" as UserManagePage
+control "Xử lý CRUD người dùng" as UserControl
+entity "Người dùng" as UserEntity
+
+Admin -> UserManagePage : Chọn "Quản lý người dùng"
+UserManagePage -> UserControl : Lấy danh sách
+UserControl -> UserEntity : Lấy tất cả người dùng
+UserEntity -> UserControl : Trả về danh sách
+UserControl -> UserManagePage : Hiển thị danh sách
+
+Admin -> UserManagePage : Chọn hành động\n(Tạo/Sửa/Xóa/Toggle/Phân quyền)
+UserManagePage -> UserControl : Gửi hành động
+UserControl -> UserEntity : Thực hiện CRUD
+UserEntity -> UserControl : Kết quả
+UserControl -> UserManagePage : Thông báo
+UserManagePage -> Admin : Hiển thị kết quả
+
+@enduml

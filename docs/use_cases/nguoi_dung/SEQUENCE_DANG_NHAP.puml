@@ -1,0 +1,31 @@
+@startuml Sequence Diagram - Đăng nhập
+title sd_DangNhap
+
+actor "Người dùng" as a
+participant "V_DangNhap" as b
+participant "C_AuthController" as c
+participant "M_NguoiDung" as d
+
+a -> b : 1: load()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: nhapEmail()
+a -> b : 4: nhapMatKhau()
+a -> b : 5: clickDangNhap()
+activate b
+b -> c : 6: login(email, matKhau)
+activate c
+c -> d : 7: select(email)
+activate d
+d --> c : 8: nguoiDung
+deactivate d
+c -> c : 9: kiemTraMatKhau()
+c -> c : 10: taoToken()
+c --> b : 11: token
+deactivate c
+b --> a : 12: chuyenHuong()
+deactivate b
+
+@enduml

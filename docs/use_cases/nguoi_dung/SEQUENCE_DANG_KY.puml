@@ -1,0 +1,33 @@
+@startuml Sequence Diagram - Đăng ký
+title sd_DangKy
+
+actor "Khách vãng lai" as a
+participant "V_DangKy" as b
+participant "C_AuthController" as c
+participant "M_NguoiDung" as d
+
+a -> b : 1: load()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: nhapThongTin()
+a -> b : 4: clickDangKy()
+activate b
+b -> c : 5: register(data)
+activate c
+c -> d : 6: kiemTraTrung()
+activate d
+d --> c : 7: ketQua
+deactivate d
+c -> d : 8: insert(data)
+activate d
+d --> c : 9: nguoiDungMoi
+deactivate d
+c -> c : 10: guiOTP()
+c --> b : 11: thanhCong
+deactivate c
+b --> a : 12: chuyenXacThuc()
+deactivate b
+
+@enduml

@@ -109,6 +109,26 @@ const router = createRouter({
           component: () => import('../views/AdminEventDetailView.vue'),
         },
         {
+          path: 'notifications',
+          name: 'admin-notifications',
+          component: () => import('../views/AdminNotificationListView.vue'),
+        },
+        {
+          path: 'ai-results',
+          name: 'admin-ai-results',
+          component: () => import('../views/AdminAIResultListView.vue'),
+        },
+        {
+          path: 'statistics',
+          name: 'admin-statistics',
+          component: () => import('../views/AdminStatisticsView.vue'),
+        },
+        {
+          path: 'cameras',
+          name: 'admin-cameras',
+          component: () => import('../views/AdminCameraListView.vue'),
+        },
+        {
           path: '',
           redirect: '/admin/dashboard'
         }

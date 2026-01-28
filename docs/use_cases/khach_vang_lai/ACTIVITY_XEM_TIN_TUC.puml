@@ -1,0 +1,34 @@
+@startuml Activity Diagram - Xem tin tức giao thông
+title Sơ đồ hoạt động - Xem tin tức giao thông
+
+start
+
+:Truy cập trang web;
+
+:Chọn "Tin tức giao thông";
+
+:Hiển thị danh sách tin tức từ RSS;
+
+if () then
+  :Chọn một tin tức;
+  
+  :Xem chi tiết tin tức;
+  
+  fork
+    :Xem tiêu đề;
+  fork again
+    :Xem nội dung;
+  fork again
+    :Xem thời gian đăng;
+  fork again
+    :Xem nguồn tin;
+  end fork
+  
+else ()
+  :Cuộn xem danh sách;
+  
+endif
+
+stop
+
+@enduml

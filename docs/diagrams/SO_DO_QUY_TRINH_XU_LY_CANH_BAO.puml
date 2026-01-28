@@ -1,0 +1,76 @@
+@startuml Sơ đồ nghiệp vụ chi tiết - Quy trình xử lý cảnh báo
+title Quy trình xử lý cảnh báo giao thông
+
+|Người dùng|
+start
+:Phát hiện sự cố giao thông;
+:Tạo cảnh báo mới;
+:Nhập thông tin:
+- Loại sự cố
+- Vị trí
+- Mô tả
+- Upload ảnh/video;
+
+|Hệ thống|
+:Lưu cảnh báo;
+:Đặt trạng thái "Chờ duyệt";
+:Gửi thông báo cho Admin;
+
+|Hệ thống AI|
+if (Có hình ảnh?) then (Có)
+  :Phân tích hình ảnh;
+  :Phát hiện đối tượng;
+  :Tính độ tin cậy;
+  :Lưu kết quả AI;
+else (Không)
+endif
+
+|Quản trị viên|
+:Nhận thông báo;
+:Xem danh sách chờ duyệt;
+:Kiểm tra cảnh báo;
+
+if (Hợp lệ?) then (Có)
+  :Phê duyệt cảnh báo;
+  |Hệ thống|
+  :Cập nhật trạng thái "Đã duyệt";
+  :Hiển thị trên bản đồ;
+  :Gửi thông báo cho người dùng đăng ký;
+  
+  fork
+    :Gửi Email;
+  fork again
+    :Gửi Telegram;
+  fork again
+    :Push notification;
+  end fork
+  
+  |Người dùng khác|
+  :Nhận thông báo;
+  :Xem cảnh báo trên bản đồ;
+  
+else (Không)
+  |Quản trị viên|
+  :Từ chối cảnh báo;
+  :Nhập lý do từ chối;
+  
+  |Hệ thống|
+  :Cập nhật trạng thái "Bị từ chối";
+  :Gửi thông báo từ chối;
+  
+  |Người dùng|
+  :Nhận thông báo từ chối;
+  :Xem lý do;
+  
+  if (Chỉnh sửa lại?) then (Có)
+    :Cập nhật cảnh báo;
+    |Hệ thống|
+    :Đặt lại trạng thái "Chờ duyệt";
+  else (Không)
+    :Xóa cảnh báo;
+  endif
+endif
+
+stop
+
+@enduml

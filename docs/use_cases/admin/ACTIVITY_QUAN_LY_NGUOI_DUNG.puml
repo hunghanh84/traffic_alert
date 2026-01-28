@@ -1,0 +1,61 @@
+@startuml Activity Diagram - Admin - Quản lý người dùng
+title Sơ đồ hoạt động - Admin - Quản lý người dùng
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý người dùng";
+
+:Hiển thị danh sách người dùng;
+
+if () then
+  :Chọn "Tạo người dùng mới";
+  
+  fork
+    :Nhập tên đăng nhập;
+  fork again
+    :Nhập email;
+  fork again
+    :Nhập mật khẩu;
+  fork again
+    :Nhập số điện thoại;
+  fork again
+    :Chọn vai trò (user/admin);
+  end fork
+  
+  :Chọn "Tạo";
+  
+elseif () then
+  :Chọn người dùng;
+  :Chọn "Cập nhật";
+  
+  :Chỉnh sửa thông tin;
+  
+  :Chọn "Lưu";
+  
+elseif () then
+  :Chọn người dùng;
+  :Chọn "Bật/Tắt trạng thái";
+  
+  :Cập nhật trạng thái;
+  
+elseif () then
+  :Chọn người dùng;
+  :Chọn "Phân quyền";
+  
+  :Thay đổi vai trò (user ↔ admin);
+  
+else ()
+  :Chọn người dùng;
+  :Chọn "Xóa";
+  
+  :Xác nhận xóa;
+  
+  :Xóa người dùng;
+  
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,245 @@
+@startuml Activity Diagram - Hệ thống Cảnh báo Giao thông
+title Sơ đồ Quy trình Hệ thống Cảnh báo Giao thông
+
+|#E0F7FA|Khách vãng lai|
+start
+:Bắt đầu;
+:Xem bản đồ cảnh báo;
+:Xem tin tức giao thông;
+
+if (Muốn đăng ký?) then (Có)
+  :Chuyển sang đăng ký;
+  note right: Chuyển sang Người dùng
+else (Không)
+endif
+
+stop
+
+|#BBDEFB|Người dùng|
+start
+:Bắt đầu;
+
+if (Đã có tài khoản?) then (Không)
+  :Đăng ký tài khoản;
+  :Nhập thông tin cá nhân;
+  :Xác thực email;
+else (Có)
+endif
+
+:Đăng nhập;
+
+partition "Xem thông tin" {
+  :Xem bản đồ cảnh báo;
+  :Xem thông tin cảnh báo;
+  :Lọc và tìm kiếm cảnh báo;
+  :Xem tin tức giao thông;
+}
+
+partition "Quản lý tài khoản" {
+  :Cập nhật thông tin cá nhân;
+  :Cập nhật tài khoản;
+}
+
+partition "Quản lý cảnh báo của tôi" {
+  if (Muốn tạo cảnh báo?) then (Có)
+    :Tạo cảnh báo mới;
+    :Chọn loại và mức độ;
+    :Chọn vị trí;
+    :Upload media (tùy chọn);
+    :Gửi cảnh báo;
+    note right
+      Trạng thái: chờ duyệt
+    end note
+  endif
+  
+  :Xem danh sách cảnh báo của tôi;
+  :Chỉnh sửa cảnh báo;
+  :Xóa cảnh báo;
+}
+
+partition "Thiết lập cảnh báo tự động" {
+  :Thiết lập cảnh báo tự động;
+  :Chọn đường theo dõi;
+  :Chọn mức độ tối thiểu;
+  :Thiết lập thời gian;
+  :Chọn kênh nhận thông báo;
+  :Kích hoạt;
+}
+
+:Đăng xuất;
+stop
+
+|#C8E6C9|Admin|
+start
+:Bắt đầu;
+:Đăng nhập;
+:Xem Dashboard;
+
+fork
+  :Xem thống kê tổng quan;
+fork again
+  :Xem hoạt động gần đây;
+end fork
+
+partition "Quản lý người dùng" {
+  :Xem danh sách người dùng;
+  
+  fork
+    :Tạo người dùng mới;
+  fork again
+    :Cập nhật thông tin người dùng;
+  fork again
+    :Xóa người dùng;
+  fork again
+    :Bật/Tắt trạng thái người dùng;
+  fork again
+    :Phân quyền người dùng;
+  end fork
+}
+
+partition "Quản lý cảnh báo" {
+  :Xem danh sách cảnh báo;
+  :Lọc theo trạng thái;
+  
+  while (Có cảnh báo chờ duyệt?) is (Có)
+    :Xem chi tiết cảnh báo;
+    
+    if (Cảnh báo hợp lệ?) then (Có)
+      :Duyệt cảnh báo;
+      :Cập nhật trạng thái → "đã duyệt";
+      :Gửi thông báo tự động;
+    else (Không)
+      :Từ chối cảnh báo;
+      :Nhập lý do từ chối;
+    endif
+  endwhile (Không)
+  
+  :Xóa cảnh báo vi phạm;
+}
+
+partition "Quản lý thông báo" {
+  :Xem danh sách thông báo;
+  :Xem lịch sử gửi thông báo;
+  
+  fork
+    :Tạo thông báo mới;
+    :Chọn đối tượng nhận;
+    :Chọn kênh gửi
+    (Email/Telegram/App);
+    :Gửi thông báo;
+  fork again
+    :Xem thống kê thông báo;
+    :Tỷ lệ gửi thành công;
+    :Tỷ lệ mở thông báo;
+  end fork
+}
+
+partition "Quản lý kết quả AI" {
+  :Xem danh sách kết quả AI;
+  :Lọc theo độ tin cậy;
+  :Lọc theo nhãn phát hiện;
+  
+  while (Có kết quả chưa xác minh?) is (Có)
+    :Xem chi tiết kết quả AI;
+    :Xem raw JSON;
+    :Xem media gốc;
+    
+    if (Kết quả chính xác?) then (Có)
+      :Xác minh kết quả AI;
+      :Đánh dấu "đã xác minh";
+    else (Không)
+      :Xóa kết quả AI sai;
+    endif
+  endwhile (Không)
+}
+
+partition "Quản lý sự kiện giao thông" {
+  :Xem danh sách sự kiện;
+  
+  fork
+    :Tạo sự kiện mới;
+    :Nhập thông tin sự kiện;
+  fork again
+    :Cập nhật sự kiện;
+  fork again
+    :Xóa sự kiện;
+  fork again
+    :Bật/Tắt trạng thái sự kiện;
+  end fork
+}
+
+partition "Quản lý dữ liệu địa lý" {
+  :Truy cập quản lý dữ liệu địa lý;
+  
+  fork
+    :Quản lý phường/xã;
+    :Thêm/Sửa/Xóa phường/xã;
+  fork again
+    :Quản lý khu vực;
+    :Thêm/Sửa/Xóa khu vực;
+  fork again
+    :Quản lý đường;
+    :Thêm/Sửa/Xóa đường;
+  fork again
+    :Cập nhật tọa độ đường;
+    :Upload file GeoJSON;
+  fork again
+    :Quản lý mức độ rủi ro;
+    :Cấu hình mức độ cảnh báo;
+    :Thiết lập màu sắc;
+    :Thiết lập độ ưu tiên;
+  end fork
+}
+
+partition "Thống kê báo cáo" {
+  :Xem thống kê báo cáo;
+  
+  fork
+    :Báo cáo theo thời gian;
+  fork again
+    :Báo cáo theo vị trí;
+  fork again
+    :Báo cáo theo loại cảnh báo;
+  fork again
+    :Báo cáo theo mức độ;
+  fork again
+    :Xuất báo cáo (PDF/Excel);
+  end fork
+}
+
+:Đăng xuất;
+stop
+
+|#E1BEE7|Hệ thống AI|
+start
+:Bắt đầu;
+:Nhận dữ liệu từ camera;
+:Phân tích ảnh/video;
+
+if (Phát hiện sự cố?) then (Có)
+  :Lưu kết quả AI;
+  :Lưu nhãn phát hiện;
+  :Lưu độ tin cậy;
+  :Lưu raw JSON;
+  
+  if (Độ tin cậy > 80%?) then (Có)
+    :Tạo cảnh báo tự động;
+    note right
+      Trạng thái: chờ duyệt
+      Cần Admin xác minh
+    end note
+  else (Không)
+    :Chỉ lưu kết quả AI;
+    note right
+      Chờ Admin xem xét
+    end note
+  endif
+  
+else (Không)
+  :Tiếp tục giám sát;
+endif
+
+:Cập nhật bản đồ (mỗi 30s);
+stop
+
+@enduml

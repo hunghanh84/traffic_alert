@@ -1,0 +1,31 @@
+@startuml Activity Diagram - Xem bản đồ cảnh báo
+title Sơ đồ hoạt động - Xem bản đồ cảnh báo
+
+start
+
+:Truy cập trang web;
+
+:Chọn "Bản đồ cảnh báo";
+
+:Hiển thị bản đồ với các cảnh báo;
+
+fork
+  :Xem cảnh báo trên bản đồ;
+  note right
+    - Marker màu theo mức độ
+    - Hiển thị vị trí
+  end note
+fork again
+  :Lọc theo loại
+  (traffic/flood);
+fork again
+  :Lọc theo mức độ
+  (low/medium/high/critical);
+fork again
+  :Click vào marker;
+  :Xem thông tin chi tiết cảnh báo;
+end fork
+
+stop
+
+@enduml

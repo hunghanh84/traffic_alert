@@ -1,0 +1,35 @@
+@startuml Sequence Diagram - Xem bản đồ cảnh báo
+title sd_XemBanDo
+
+actor "Khách vãng lai" as a
+participant "V_BanDo" as b
+participant "C_MapController" as c
+participant "M_BaiDang" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSachCanhBao()
+activate c
+c -> d : 3: select(trangThai='da_duyet')
+activate d
+d --> c : 4: danhSachCanhBao
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiBanDo()
+deactivate b
+
+a -> b : 7: clickMarker(id)
+activate b
+b -> c : 8: layChiTiet(id)
+activate c
+c -> d : 9: select(id)
+activate d
+d --> c : 10: chiTiet
+deactivate d
+c --> b : 11: duLieu
+deactivate c
+b --> a : 12: hienThiPopup()
+deactivate b
+
+@enduml

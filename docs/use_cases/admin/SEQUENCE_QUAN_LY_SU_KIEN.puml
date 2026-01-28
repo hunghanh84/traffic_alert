@@ -1,0 +1,41 @@
+@startuml Sequence Diagram - Admin - Quản lý sự kiện
+title sd_QuanLySuKien
+
+actor "Admin" as a
+participant "V_QuanLySuKien" as b
+participant "C_EventController" as c
+participant "M_SuKien" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSach()
+activate c
+c -> d : 3: selectAll()
+activate d
+d --> c : 4: danhSachSuKien
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: clickTao()
+activate b
+b --> a : 8: hienThiForm()
+deactivate b
+
+a -> b : 9: nhapThongTin()
+a -> b : 10: clickLuu()
+activate b
+b -> c : 11: taoSuKien(data)
+activate c
+c -> d : 12: insert(data)
+activate d
+d --> c : 13: suKienMoi
+deactivate d
+c --> b : 14: thanhCong
+deactivate c
+b --> a : 15: hienThiThongBao()
+deactivate b
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml Sequence Diagram - Xem tin tức giao thông
+title sd_XemTinTuc
+
+actor "Khách vãng lai" as a
+participant "V_TinTuc" as b
+participant "C_NewsController" as c
+participant "M_TinTuc" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSachTinTuc()
+activate c
+c -> d : 3: selectFromRSS()
+activate d
+d --> c : 4: danhSachTinTuc
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: clickTinTuc(id)
+activate b
+b -> c : 8: layChiTiet(id)
+activate c
+c -> d : 9: select(id)
+activate d
+d --> c : 10: chiTiet
+deactivate d
+c --> b : 11: duLieu
+deactivate c
+b --> a : 12: hienThiChiTiet()
+deactivate b
+
+@enduml

@@ -1,0 +1,77 @@
+@startuml So do nghiep vu - He thong canh bao giao thong
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam swimlaneWidth 800
+
+|#LightBlue|Khach hang|
+start
+if (Da co tai\nkhoan?) then (Co)
+  :Dang nhap;
+else (Khong)
+  :Dang ky;
+endif
+:Xem nien\nxem diem;
+:Thien vao goi hang;
+fork
+  :Chon hinh thuc vien\nthanh toan;
+fork again
+  :Chon hinh thuc nhan\nhang;
+end fork
+if (Thanh toan\nthanh\ncong?) then (Co)
+  :Thanh toan;
+  :Mua hang;
+  :Xac nhan don hang;
+  :Theo doi don hang;
+else (Khong)
+  :Dang xuat;
+  stop
+endif
+:Ket thuc;
+
+|#LightYellow|Nhan vien|
+:Bat dau;
+:Dang nhap;
+fork
+  :Xem don hang;
+fork again
+  :Duyet don hang;
+fork again
+  :Cao nhat don hang;
+fork again
+  :Tao bao cao;
+end fork
+:Ket thuc;
+
+|#LightGreen|Admin|
+:Bat dau;
+:Dang nhap;
+fork
+  :Quan ly bai viet;
+fork again
+  :Cap nhat banner;
+fork again
+  :Quan ly don hang;
+fork again
+  :Quan ly danh muc;
+fork again
+  :Quan ly san pham;
+fork again
+  :Quan ly nhan vien;
+fork again
+  :Quan ly diem gia;
+fork again
+  :Quan ly khach hang;
+fork again
+  :Thong ke bao cao;
+end fork
+:Ket thuc;
+
+|#LightCyan|Khach vang lai|
+:Bat dau;
+:Xem san pham;
+:Loc - Tim kiem;
+:Ket thuc;
+
+stop
+
+@enduml

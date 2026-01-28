@@ -1,0 +1,36 @@
+@startuml Sequence Diagram - Admin - Quản lý dữ liệu địa lý
+title sd_QuanLyDuLieuDiaLy
+
+actor "Admin" as a
+participant "V_QuanLyDiaLy" as b
+participant "C_GeoController" as c
+participant "M_DuLieuDiaLy" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSach()
+activate c
+c -> d : 3: selectAll()
+activate d
+d --> c : 4: danhSach
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: chonFile()
+a -> b : 8: uploadGeoJSON(file)
+activate b
+b -> c : 9: capNhatToaDo(file)
+activate c
+c -> d : 10: update(coordinates)
+activate d
+d --> c : 11: ketQua
+deactivate d
+c --> b : 12: thanhCong
+deactivate c
+b --> a : 13: hienThiThongBao()
+deactivate b
+
+@enduml

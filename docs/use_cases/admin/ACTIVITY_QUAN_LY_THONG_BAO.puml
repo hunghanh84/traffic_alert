@@ -1,0 +1,51 @@
+@startuml Activity Diagram - Admin - Quản lý thông báo
+title Sơ đồ hoạt động - Admin - Quản lý thông báo
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý thông báo";
+
+if () then
+  :Chọn "Tạo thông báo mới";
+  
+  fork
+    :Nhập tiêu đề;
+  fork again
+    :Nhập nội dung;
+  fork again
+    :Chọn đối tượng nhận
+    (Tất cả/Theo khu vực/Theo người dùng);
+  fork again
+    :Chọn kênh gửi
+    (Email/Telegram/App);
+  end fork
+  
+  :Chọn "Gửi thông báo";
+  
+  :Hệ thống gửi thông báo;
+  
+  :Hiển thị "Gửi thành công";
+  
+elseif () then
+  :Chọn "Xem lịch sử thông báo";
+  
+  :Hiển thị danh sách đã gửi;
+  
+else ()
+  :Chọn "Xem thống kê";
+  
+  fork
+    :Tỷ lệ gửi thành công;
+  fork again
+    :Tỷ lệ mở thông báo;
+  fork again
+    :Tỷ lệ click;
+  end fork
+  
+endif
+
+stop
+
+@enduml

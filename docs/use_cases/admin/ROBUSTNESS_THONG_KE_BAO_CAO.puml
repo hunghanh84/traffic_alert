@@ -1,0 +1,23 @@
+@startuml Robustness Diagram - Thống kê báo cáo
+title Sơ đồ phân tích Robustness - Thống kê báo cáo
+
+actor "Admin" as Admin
+
+boundary "Trang thống kê" as ReportPage
+control "Xử lý thống kê" as ReportControl
+entity "Dữ liệu hệ thống" as DataEntity
+control "Xuất file" as ExportControl
+
+Admin -> ReportPage : Chọn "Thống kê báo cáo"
+Admin -> ReportPage : Chọn loại báo cáo và tiêu chí lọc
+ReportPage -> ReportControl : Gửi tiêu chí
+ReportControl -> DataEntity : Lấy dữ liệu
+DataEntity -> ReportControl : Trả về dữ liệu
+ReportControl -> ReportPage : Hiển thị biểu đồ/báo cáo
+ReportPage -> Admin : Hiển thị thống kê
+
+Admin -> ReportPage : Chọn "Xuất báo cáo"
+ReportPage -> ExportControl : Tạo file (PDF/Excel)
+ExportControl -> Admin : Tải xuống file
+
+@enduml

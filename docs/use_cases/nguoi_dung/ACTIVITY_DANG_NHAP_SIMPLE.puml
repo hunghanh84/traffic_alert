@@ -1,0 +1,35 @@
+@startuml Activity Diagram - Đăng nhập
+title Sơ đồ hoạt động - Chức năng Đăng nhập
+
+start
+
+:Truy cập trang web;
+
+:Truy cập trang đăng nhập;
+
+if () then
+  :Chọn "Đăng ký";
+  
+elseif () then
+  :Chọn "Quên mật khẩu";
+  
+elseif () then
+  :Chọn "Đăng nhập với Google";
+  
+elseif () then
+  :Chọn "Đăng nhập với Facebook";
+  
+else ()
+  fork
+    :Nhập mật khẩu;
+  fork again
+    :Nhập email;
+  end fork
+  
+  :Chọn "Đăng nhập";
+  
+endif
+
+stop
+
+@enduml

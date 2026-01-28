@@ -14,6 +14,7 @@ const menuItems = [
   { path: '/admin/users', icon: '👥', label: 'Quản lý Người dùng', section: 'main' },
   { path: '/admin/notifications', icon: '📢', label: 'Quản lý Thông báo', section: 'main' },
   { path: '/admin/cameras', icon: '📹', label: 'Quản lý Camera', section: 'main' },
+  { path: '/admin/ai-results', icon: '🤖', label: 'Kết quả AI', section: 'main' },
   { path: '/admin/statistics', icon: '📊', label: 'Thống kê', section: 'main' },
   { path: '/', icon: '🏠', label: 'Về trang chủ', section: 'footer' },
 ]

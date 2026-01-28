@@ -1,0 +1,17 @@
+@startuml Robustness Diagram - Tìm kiếm
+title Sơ đồ phân tích Robustness - Lọc và tìm kiếm cảnh báo
+
+actor "Người dùng" as User
+
+boundary "Trang tìm kiếm" as SearchPage
+control "Xử lý tìm kiếm" as SearchControl
+entity "Bài đăng" as AlertEntity
+
+User -> SearchPage : Nhập tiêu chí tìm kiếm
+SearchPage -> SearchControl : Gửi tiêu chí
+SearchControl -> AlertEntity : Tìm kiếm
+AlertEntity -> SearchControl : Trả về kết quả
+SearchControl -> SearchPage : Hiển thị kết quả
+SearchPage -> User : Hiển thị danh sách/Không tìm thấy
+
+@enduml

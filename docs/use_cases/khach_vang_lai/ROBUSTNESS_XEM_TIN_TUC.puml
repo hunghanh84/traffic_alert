@@ -1,0 +1,17 @@
+@startuml Robustness Diagram - Xem tin tức giao thông
+title Sơ đồ phân tích Robustness - Xem tin tức giao thông
+
+actor "Khách vãng lai" as Guest
+
+boundary "Trang tin tức" as NewsPage
+control "Xử lý RSS" as RSSControl
+entity "Tin tức" as NewsEntity
+
+Guest -> NewsPage : Chọn "Tin tức giao thông"
+NewsPage -> RSSControl : Lấy tin tức từ RSS
+RSSControl -> NewsEntity : Lấy danh sách tin tức
+NewsEntity -> RSSControl : Trả về dữ liệu
+RSSControl -> NewsPage : Hiển thị danh sách
+NewsPage -> Guest : Hiển thị tin tức
+
+@enduml

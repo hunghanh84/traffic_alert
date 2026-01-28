@@ -1,0 +1,49 @@
+@startuml Activity Diagram - Admin - Quản lý cảnh báo
+title Sơ đồ hoạt động - Admin - Quản lý cảnh báo
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Quản lý cảnh báo";
+
+:Hiển thị danh sách cảnh báo chờ duyệt;
+
+:Chọn một cảnh báo;
+
+:Xem chi tiết cảnh báo;
+
+if () then
+  :Chọn "Duyệt cảnh báo";
+  
+  :Cập nhật trạng thái → "đã duyệt";
+  
+  :Gửi thông báo cho người tạo;
+  
+  :Hiển thị "Duyệt cảnh báo thành công";
+  
+elseif () then
+  :Chọn "Từ chối cảnh báo";
+  
+  :Nhập lý do từ chối;
+  
+  :Cập nhật trạng thái → "đã từ chối";
+  
+  :Gửi thông báo kèm lý do;
+  
+  :Hiển thị "Từ chối cảnh báo thành công";
+  
+else ()
+  :Chọn "Xóa cảnh báo";
+  
+  :Xác nhận xóa;
+  
+  :Xóa cảnh báo khỏi database;
+  
+  :Hiển thị "Xóa cảnh báo thành công";
+  
+endif
+
+stop
+
+@enduml

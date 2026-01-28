@@ -19,8 +19,10 @@ import AdminSidebar from '../components/AdminSidebar.vue'
 }
 
 .admin-content {
-  margin-left: 260px;
   flex: 1;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  padding-left: 260px;
 }
 </style>

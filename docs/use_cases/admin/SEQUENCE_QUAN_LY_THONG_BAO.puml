@@ -1,0 +1,31 @@
+@startuml Sequence Diagram - Admin - Quản lý thông báo
+title sd_QuanLyThongBao
+
+actor "Admin" as a
+participant "V_QuanLyThongBao" as b
+participant "C_NotificationController" as c
+participant "M_ThongBao" as d
+
+a -> b : 1: clickTaoMoi()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: nhapTieuDe()
+a -> b : 4: nhapNoiDung()
+a -> b : 5: chonDoiTuong()
+a -> b : 6: clickGui()
+activate b
+b -> c : 7: guiThongBao(data)
+activate c
+c -> d : 8: insert(data)
+activate d
+d --> c : 9: thongBaoMoi
+deactivate d
+c -> c : 10: guiEmail()
+c --> b : 11: thanhCong
+deactivate c
+b --> a : 12: hienThiThongBao()
+deactivate b
+
+@enduml

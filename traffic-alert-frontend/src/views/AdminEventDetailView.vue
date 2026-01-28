@@ -140,7 +140,7 @@ onMounted(() => {
 <style scoped>
 .admin-event-detail {
   padding: 2rem;
-  margin-left: 280px;
+  margin-left: 0;
   min-height: 100vh;
 }
 

@@ -1,0 +1,36 @@
+@startuml Sequence Diagram - Cập nhật thông tin
+title sd_CapNhatThongTin
+
+actor "Người dùng" as a
+participant "V_TaiKhoan" as b
+participant "C_AuthController" as c
+participant "M_NguoiDung" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layThongTin()
+activate c
+c -> d : 3: select(id)
+activate d
+d --> c : 4: thongTin
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiForm()
+deactivate b
+
+a -> b : 7: chinhSua()
+a -> b : 8: clickCapNhat()
+activate b
+b -> c : 9: updateProfile(data)
+activate c
+c -> d : 10: update(data)
+activate d
+d --> c : 11: ketQua
+deactivate d
+c --> b : 12: thanhCong
+deactivate c
+b --> a : 13: hienThiThongBao()
+deactivate b
+
+@enduml

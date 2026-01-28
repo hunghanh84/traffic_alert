@@ -1,0 +1,23 @@
+@startuml Robustness Diagram - Quản lý sự kiện
+title Sơ đồ phân tích Robustness - Quản lý sự kiện giao thông
+
+actor "Admin" as Admin
+
+boundary "Trang quản lý sự kiện" as EventManagePage
+control "Xử lý CRUD sự kiện" as EventControl
+entity "Sự kiện giao thông" as EventEntity
+
+Admin -> EventManagePage : Chọn "Quản lý sự kiện"
+EventManagePage -> EventControl : Lấy danh sách
+EventControl -> EventEntity : Lấy tất cả sự kiện
+EventEntity -> EventControl : Trả về danh sách
+EventControl -> EventManagePage : Hiển thị danh sách
+
+Admin -> EventManagePage : Chọn hành động\n(Tạo/Sửa/Xóa/Toggle)
+EventManagePage -> EventControl : Gửi hành động
+EventControl -> EventEntity : Thực hiện CRUD
+EventEntity -> EventControl : Kết quả
+EventControl -> EventManagePage : Thông báo
+EventManagePage -> Admin : Hiển thị kết quả
+
+@enduml

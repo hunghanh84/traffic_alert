@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('ma_camera', 100)->unique();
             $table->string('ten_camera', 255);
             $table->foreignId('duong_id')->nullable()->constrained('duong')->onDelete('cascade');
-            $table->foreignId('khu_vuc_id')->nullable()->constrained('khu_vuc')->onDelete('cascade');
             $table->string('stream_url', 500)->nullable();
             $table->dateTime('lan_kiem_tra_cuoi')->nullable();
             $table->string('trang_thai_ket_noi', 50)->default('active');

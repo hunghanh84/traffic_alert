@@ -1,0 +1,39 @@
+@startuml Activity Diagram - Thiết lập cảnh báo tự động
+title Sơ đồ hoạt động - Thiết lập cảnh báo tự động
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Thiết lập cảnh báo tự động";
+
+if () then
+  :Chọn "Hủy";
+  
+else ()
+  fork
+    :Chọn đường theo dõi;
+  fork again
+    :Chọn mức độ tối thiểu
+    (low/medium/high/critical);
+  fork again
+    :Thiết lập thời gian
+    (từ - đến);
+  fork again
+    :Chọn ngày trong tuần;
+  fork again
+    :Chọn kênh nhận
+    (Email/Telegram);
+  end fork
+  
+  :Chọn "Kích hoạt";
+  
+  :Lưu thiết lập;
+  
+  :Hiển thị "Thiết lập thành công";
+  
+endif
+
+stop
+
+@enduml

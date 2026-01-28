@@ -1,0 +1,35 @@
+@startuml Sequence Diagram - Xem cảnh báo
+title sd_XemCanhBao
+
+actor "Người dùng" as a
+participant "V_CanhBao" as b
+participant "C_AlertController" as c
+participant "M_BaiDang" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSach()
+activate c
+c -> d : 3: select(trangThai='da_duyet')
+activate d
+d --> c : 4: danhSach
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: clickCanhBao(id)
+activate b
+b -> c : 8: show(id)
+activate c
+c -> d : 9: select(id)
+activate d
+d --> c : 10: chiTiet
+deactivate d
+c --> b : 11: duLieu
+deactivate c
+b --> a : 12: hienThiChiTiet()
+deactivate b
+
+@enduml

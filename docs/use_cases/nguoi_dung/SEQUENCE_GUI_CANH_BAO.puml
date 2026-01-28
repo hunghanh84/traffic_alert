@@ -1,0 +1,30 @@
+@startuml Sequence Diagram - Gửi cảnh báo
+title sd_GuiCanhBao
+
+actor "Người dùng" as a
+participant "V_TaoCanhBao" as b
+participant "C_AlertController" as c
+participant "M_BaiDang" as d
+
+a -> b : 1: load()
+activate b
+b --> a : 2: hienThiForm()
+deactivate b
+
+a -> b : 3: nhapThongTin()
+a -> b : 4: uploadMedia()
+a -> b : 5: clickGui()
+activate b
+b -> c : 6: store(data)
+activate c
+c -> c : 7: saveMedia()
+c -> d : 8: insert(trangThai='cho_duyet')
+activate d
+d --> c : 9: canhBaoMoi
+deactivate d
+c --> b : 10: thanhCong
+deactivate c
+b --> a : 11: hienThiThongBao()
+deactivate b
+
+@enduml

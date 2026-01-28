@@ -283,7 +283,7 @@ onMounted(() => {
 <style scoped>
 .admin-alerts {
   padding: 2rem;
-  margin-left: 280px; /* Account for sidebar width */
+  margin-left: 0; /* Account for sidebar width */
   min-height: 100vh;
 }
 

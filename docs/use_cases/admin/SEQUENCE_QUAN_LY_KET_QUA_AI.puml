@@ -1,0 +1,36 @@
+@startuml Sequence Diagram - Admin - Quản lý kết quả AI
+title sd_QuanLyKetQuaAI
+
+actor "Admin" as a
+participant "V_QuanLyAI" as b
+participant "C_AIController" as c
+participant "M_KetQuaAI" as d
+
+a -> b : 1: load()
+activate b
+b -> c : 2: layDanhSach()
+activate c
+c -> d : 3: selectAll()
+activate d
+d --> c : 4: danhSachKetQua
+deactivate d
+c --> b : 5: duLieu
+deactivate c
+b --> a : 6: hienThiDanhSach()
+deactivate b
+
+a -> b : 7: chonKetQua()
+a -> b : 8: clickXacMinh(id)
+activate b
+b -> c : 9: xacMinhKetQua(id)
+activate c
+c -> d : 10: update(daXacMinh=true)
+activate d
+d --> c : 11: ketQua
+deactivate d
+c --> b : 12: thanhCong
+deactivate c
+b --> a : 13: hienThiThongBao()
+deactivate b
+
+@enduml

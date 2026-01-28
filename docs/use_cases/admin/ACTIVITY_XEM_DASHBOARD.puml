@@ -1,0 +1,36 @@
+@startuml Activity Diagram - Admin - Xem Dashboard
+title Sơ đồ hoạt động - Admin - Xem Dashboard
+
+start
+
+:Đăng nhập với vai trò Admin;
+
+:Chọn "Dashboard";
+
+fork
+  :Xem thống kê tổng quan;
+  note right
+    - Tổng số cảnh báo
+    - Cảnh báo chờ duyệt
+    - Tổng số người dùng
+    - Tổng số sự kiện
+  end note
+fork again
+  :Xem hoạt động gần đây;
+  note right
+    - Cảnh báo mới
+    - Người dùng mới
+    - Sự kiện mới
+  end note
+fork again
+  :Xem biểu đồ thống kê;
+  note right
+    - Theo thời gian
+    - Theo vị trí
+    - Theo loại
+  end note
+end fork
+
+stop
+
+@enduml

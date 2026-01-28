@@ -1,0 +1,26 @@
+@startuml Robustness Diagram - Xem cảnh báo
+title Sơ đồ phân tích Robustness - Xem thông tin cảnh báo
+
+actor "Người dùng" as User
+
+boundary "Trang cảnh báo" as AlertPage
+control "Xử lý hiển thị" as DisplayControl
+entity "Bài đăng" as AlertEntity
+entity "Media" as MediaEntity
+
+User -> AlertPage : Chọn "Cảnh báo"
+AlertPage -> DisplayControl : Lấy danh sách
+DisplayControl -> AlertEntity : Lấy cảnh báo đã duyệt
+AlertEntity -> DisplayControl : Trả về danh sách
+DisplayControl -> AlertPage : Hiển thị danh sách
+
+User -> AlertPage : Chọn một cảnh báo
+AlertPage -> DisplayControl : Lấy chi tiết
+DisplayControl -> AlertEntity : Lấy thông tin chi tiết
+DisplayControl -> MediaEntity : Lấy ảnh/video
+AlertEntity -> DisplayControl : Trả về dữ liệu
+MediaEntity -> DisplayControl : Trả về media
+DisplayControl -> AlertPage : Hiển thị chi tiết
+AlertPage -> User : Hiển thị thông tin
+
+@enduml

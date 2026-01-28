@@ -1,0 +1,23 @@
+@startuml Robustness Diagram - Xem Dashboard
+title Sơ đồ phân tích Robustness - Xem Dashboard
+
+actor "Admin" as Admin
+
+boundary "Trang Dashboard" as DashboardPage
+control "Xử lý thống kê" as StatsControl
+entity "Bài đăng" as AlertEntity
+entity "Người dùng" as UserEntity
+entity "Sự kiện" as EventEntity
+
+Admin -> DashboardPage : Đăng nhập
+DashboardPage -> StatsControl : Lấy thống kê
+StatsControl -> AlertEntity : Đếm số cảnh báo
+StatsControl -> UserEntity : Đếm số người dùng
+StatsControl -> EventEntity : Đếm số sự kiện
+AlertEntity -> StatsControl : Trả về số liệu
+UserEntity -> StatsControl : Trả về số liệu
+EventEntity -> StatsControl : Trả về số liệu
+StatsControl -> DashboardPage : Hiển thị Dashboard
+DashboardPage -> Admin : Hiển thị thống kê và biểu đồ
+
+@enduml

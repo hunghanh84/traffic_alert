@@ -1,0 +1,35 @@
+@startuml Activity Diagram - Xem thông tin cảnh báo
+title Sơ đồ hoạt động - Xem thông tin cảnh báo
+
+start
+
+:Đăng nhập vào hệ thống;
+
+:Chọn "Cảnh báo";
+
+if () then
+  :Chọn "Xem bản đồ";
+  
+elseif () then
+  :Chọn "Xem danh sách";
+  
+else ()
+  :Chọn một cảnh báo;
+  
+  fork
+    :Xem thông tin chi tiết;
+  fork again
+    :Xem vị trí trên bản đồ;
+  fork again
+    :Xem ảnh/video;
+  fork again
+    :Xem người tạo;
+  fork again
+    :Xem thời gian;
+  end fork
+  
+endif
+
+stop
+
+@enduml

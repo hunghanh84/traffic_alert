@@ -45,13 +45,14 @@ Route::prefix('locations')->group(function () {
 
 // Alert API routes
 Route::prefix('alerts')->group(function () {
-    // Public routes
-    Route::get('/', [AlertController::class, 'index']);
+    // Public routes (no authentication required)
+    Route::get('/public', [AlertController::class, 'publicIndex']); // For /routes page
     Route::get('/map', [AlertController::class, 'getApprovedAlertsForMap']);
     Route::get('/{id}', [AlertController::class, 'show']);
 
-    // Protected routes
+    // Protected routes (authentication required)
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/', [AlertController::class, 'index']); // User's own alerts
         Route::post('/', [AlertController::class, 'store']);
         Route::put('/{id}', [AlertController::class, 'update']);
         Route::put('/{id}/approve', [AlertController::class, 'approve']);
@@ -103,7 +104,52 @@ Route::prefix('admin')->middleware(['auth:sanctum', App\Http\Middleware\CheckAdm
         Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'destroy']);
         Route::put('/{id}/toggle-status', [App\Http\Controllers\Api\Admin\AdminEventController::class, 'toggleStatus']);
     });
+
+    // Notification Management
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'index']);
+        Route::get('/events', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'getEvents']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'show']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'update']);
+        Route::post('/{id}/send', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'send']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminNotificationController::class, 'destroy']);
+    });
+
+    // AI Results Management
+    Route::prefix('ai-results')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'index']);
+        Route::get('/statistics', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'statistics']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'show']);
+        Route::post('/{id}/verify', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'verify']);
+        Route::post('/{id}/unverify', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'unverify']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminAIResultController::class, 'destroy']);
+    });
+
+    // Statistics
+    Route::prefix('statistics')->group(function () {
+        Route::get('/overview', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'overview']);
+        Route::get('/events-by-type', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'eventsByType']);
+        Route::get('/events-trend', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'eventsTrend']);
+        Route::get('/ai-by-label', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'aiByLabel']);
+        Route::get('/top-users', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'topUsers']);
+        Route::get('/events-by-area', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'eventsByArea']);
+        Route::get('/export', [App\Http\Controllers\Api\Admin\AdminStatisticsController::class, 'export']);
+    });
+
+    // Camera Management
+    Route::prefix('cameras')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'index']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'show']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'update']);
+        Route::post('/{id}/toggle-status', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'toggleStatus']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\AdminCameraController::class, 'destroy']);
+    });
 });
 
 // RSS News API routes
 Route::get('/news/traffic', [RssNewsController::class, 'getTrafficNews']);
+
+// AI Detection API (from Python service)
+Route::post('/ai/detect', [App\Http\Controllers\Api\AIDetectionController::class, 'detect']);
