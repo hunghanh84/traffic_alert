@@ -21,6 +21,9 @@ php artisan config:cache
 # Run migrations
 php artisan migrate --force --no-interaction
 
+# Create storage link
+php artisan storage:link --force || true
+
 # Clear view/route cache
 php artisan view:clear
 php artisan route:cache
